@@ -1,26 +1,62 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component, Suspense } from "react";
+import "antd-mobile/dist/antd-mobile.css";
+import { Route, Redirect, Switch } from "react-router-dom";
+import routes from "./router/router";
+import { GlobalStyle } from "./style";
+import { userManager } from "./utils/userManager";
+import "./index.css";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  state = {
+    isUserAuthorized: null,
+    initialPath: "/login"
+  };
+
+  componentDidMount() {
+    const isValid = this.checkUserAuthorized();
+    if (isValid) {
+      this.setState({ initialPath: "/home" });
+    }
+  }
+  checkUserAuthorized = async () => {
+    // const isUserAuthorized = await userManager.checkUserAuthorized();
+    const isUserAuthorized = false;
+    console.log("isUserAuthorized: ", isUserAuthorized);
+    this.setState({ isUserAuthorized });
+  };
+
+  render() {
+    return (
+      <div className="App">
+        <Suspense fallback={<div>Loading</div>}>
+          <Switch>
+            {routes.map((route, index) => (
+              <Route
+                key={index}
+                path={route.path}
+                exact={route.exact}
+                render={(props) => {
+                  if (route.requiresAuth) {
+                    if (this.state.isUserAuthorized === true) {
+                      return <route.component />;
+                    } else if (this.state.isUserAuthorized === null) {
+                      return <div>loading</div>;
+                    } else if (this.state.isUserAuthorized === false) {
+                      return <Redirect to={{ pathname: "/login" }} />;
+                    }
+                  } else {
+                    return <route.component />;
+                  }
+                }}
+              />
+            ))}
+            <Redirect path="/" to={{ pathname: this.state.initialPath }} />
+          </Switch>
+        </Suspense>
+        <GlobalStyle />
+      </div>
+    );
+  }
 }
 
 export default App;

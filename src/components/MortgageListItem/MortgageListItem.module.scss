@@ -1,0 +1,22 @@
+.itemWrapper {
+  position: relative;
+}
+
+.item {
+  width: 100%;
+  padding-left: 0;
+}
+
+.agreeItem {
+  width: 100%;
+  :global {
+    .am-checkbox-agree-label {
+      width: 100%;
+    }
+
+    .rightText {
+      text-align: right;
+      padding-right: 1rem;
+    }
+  }
+}

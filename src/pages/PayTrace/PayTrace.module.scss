@@ -1,0 +1,16 @@
+.wrapper {
+  width: 100%;
+  height: calc(100% - 44px);
+}
+
+.list {
+  width: 100%;
+}
+
+.listWrapper {
+  display: "flex";
+  align-items: "flex-start";
+  justify-content: "center";
+  background-color: "#fff";
+  overflow: hidden;
+}

@@ -1,3 +1,6 @@
+html, body{
+	height: 100%;
+}
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -11,3 +14,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.App{
+  height: 100%;
+}
+/* https://segmentfault.com/a/1190000020348253?utm_source=tag-newest */
+* {touch-action: pan-y;}
