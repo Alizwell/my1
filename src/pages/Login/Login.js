@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Button, Toast } from "antd-mobile";
 import { useHistory } from "react-router-dom";
-import { testLogin } from "../../service/account";
+import { testLogin } from "../../service/account.service";
 import { setToken, setUserInfo } from "../../redux/action/user";
+import { addBuGUID, addProjGUID } from "../../redux/action/project";
 import styles from "./login.module.scss";
 import { cookies } from "brownies";
+import { setTitle } from '../../utils/title';
 
 const Login = ({ setToken, setUserInfo }) => {
   let history = useHistory();
@@ -20,6 +22,10 @@ const Login = ({ setToken, setUserInfo }) => {
     setCanSubmit(formData.userName && formData.passwd);
   }, [formData]);
 
+  useEffect(()=>{
+    setTitle("回款跟进");
+  }, [])
+
   const changeFormdata = e => {
     let { name, value } = e.target;
     setFormData(prev => ({
@@ -30,18 +36,22 @@ const Login = ({ setToken, setUserInfo }) => {
 
   const onSubmit = () => {
     //清空cookie
-    delete cookies.token;
+    delete cookies.tokenInfo;
     setCanSubmit(false);
     Toast.loading(null, 0, null, true);
     testLogin({ name: formData.userName, password: formData.passwd })
       .then(res => {
         if (res && res.data && res.data.StatusCode === 200) {
           if (res && res.data && res.data.HttpContent) {
-            const access_Token = res.data.HttpContent.TokenInfo
-              ? res.data.HttpContent.TokenInfo.access_token
-              : "";
             const userInfo = res.data.HttpContent.UserInfo;
-            setToken(access_Token);
+            if(res.data.HttpContent.TokenInfo){
+              const token = res.data.HttpContent.TokenInfo.access_token;
+              const username = res.data.HttpContent.TokenInfo.userName;
+              setToken({
+                username,
+                token
+              });
+            }
             setUserInfo(userInfo);
           }
 

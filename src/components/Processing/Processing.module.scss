@@ -1,0 +1,31 @@
+.processing {
+  :global {
+    .am-steps-item-title {
+      width: 100%;
+    }
+  }
+
+  .record {
+    height: 40px;
+    padding-left: 30px;
+    line-height: 40px;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .steps {
+    padding: 20px;
+  }
+  .delWrapper {
+    flex-grow: 0;
+    flex-basis: 70px;
+  }
+  .delItem {
+    background-size: 40%;
+    width: 70px;
+    background-position: 0 50%;
+    display: block;
+    text-align: right;
+    background-repeat: no-repeat;
+    background-image: url("/img/icon-dialog.svg");
+  }
+}

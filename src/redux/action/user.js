@@ -2,7 +2,7 @@ import { SET_TOKEN, SET_USER_INFO } from "../const/user";
 import { cookies } from "brownies";
 
 export const setToken = payload => {
-  cookies.token = payload;
+  cookies.tokenInfo = payload;
   return {
     type: SET_TOKEN,
     payload

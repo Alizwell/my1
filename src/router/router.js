@@ -7,8 +7,31 @@ const routes = [
     },
     {
         path: '/home',
-        // requiresAuth: true,
+        requiresAuth: true,
         component: lazy(() => import('../pages/Home')),
+        routes: [
+            {
+              path: "/home/payTrace",
+              component: lazy(() => import('../pages/PayTrace')),
+            },
+            // {
+            //   path: "/home/Self",
+            //   component: lazy(() => import('../pages/Self')),
+            // },
+            // {
+            //   path: "/home/AfterSaleService",
+            //   component: lazy(() => import('../pages/AfterSaleService')),
+            // },
+          ]
+    },
+    // {
+    //   path: "/home/payTrace",
+    //   component: lazy(() => import('../pages/PayTrace')),
+    // },
+    {
+        path: '/detail',
+        requiresAuth: true,
+        component: lazy(() => import('../pages/CustomDetail')),
     }
 ]
 

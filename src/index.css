@@ -1,5 +1,6 @@
-html, body{
-	height: 100%;
+html,
+body {
+  height: 100%;
 }
 body {
   margin: 0;
@@ -15,8 +16,16 @@ code {
     monospace;
 }
 
-.App{
+.App {
   height: 100%;
 }
+
+.loading {
+  height: 100%;
+  justify-content: center;
+  /* width: 100%; */
+}
 /* https://segmentfault.com/a/1190000020348253?utm_source=tag-newest */
-* {touch-action: pan-y;}
+* {
+  touch-action: pan-y;
+}

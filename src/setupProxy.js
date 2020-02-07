@@ -6,6 +6,9 @@ module.exports = function(app) {
     proxy({
       target: "http://39.98.108.23/",
       changeOrigin: true,
+      router:{
+        'http://192.168.1.4:3000': 'http://39.98.108.23/'
+      },
       pathRewrite: {
         "^/api": ""
       }

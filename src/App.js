@@ -9,20 +9,21 @@ import "./index.css";
 class App extends Component {
   state = {
     isUserAuthorized: null,
-    initialPath: "/login"
+    initialPath: "/home"
   };
 
-  componentDidMount() {
-    const isValid = this.checkUserAuthorized();
-    if (isValid) {
-      this.setState({ initialPath: "/home" });
+  async componentDidMount () {
+    const isValid = await this.checkUserAuthorized();
+    if(isValid){
+      //we need to update user info in redux
+      
     }
   }
   checkUserAuthorized = async () => {
-    // const isUserAuthorized = await userManager.checkUserAuthorized();
-    const isUserAuthorized = false;
+    const isUserAuthorized = await userManager.checkUserAuthorized();
     console.log("isUserAuthorized: ", isUserAuthorized);
     this.setState({ isUserAuthorized });
+    return isUserAuthorized;
   };
 
   render() {

@@ -3,18 +3,19 @@ import { TabBar } from "antd-mobile";
 import PayTrace from "../PayTrace";
 import Self from "../Self";
 import Service from "../Service";
-import "./home.css";
 import { Switch, Route } from "react-router-dom";
 
+import { setTitle }  from '../../utils/title';
 import CommonFound from "../CommonFound";
 import Mortgage from "../Mortgage";
 import Contract from "../Contract";
 
+import "./home.css";
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedTab: "redTab",
+      selectedTab: "tab0",
       hidden: false,
       fullScreen: true
     };
@@ -59,10 +60,11 @@ class Home extends React.Component {
             title="售后服务"
             key="Service"
             badge={"new"}
-            selected={this.state.selectedTab === "redTab"}
+            selected={this.state.selectedTab === "tab0"}
             onPress={() => {
+              setTitle('售后服务');
               this.setState({
-                selectedTab: "redTab"
+                selectedTab: "tab0"
               });
             }}
             data-seed="logId1"
@@ -70,10 +72,7 @@ class Home extends React.Component {
             <Switch>
               <Route exact path="/home" children={<Service />} />
               <Route path="/home/service/mortgage" children={<Mortgage />} />
-              <Route
-                path="/home/service/commonFound"
-                children={<CommonFound />}
-              />
+              <Route path="/home/service/commonFound" children={<CommonFound />}/>
               <Route path="/home/service/contract" children={<Contract />} />
             </Switch>
           </TabBar.Item>
@@ -101,10 +100,11 @@ class Home extends React.Component {
             title="回款跟进"
             key="PayTrace"
             dot
-            selected={this.state.selectedTab === "greenTab"}
+            selected={this.state.selectedTab === "tab1"}
             onPress={() => {
+              setTitle('回款跟进');
               this.setState({
-                selectedTab: "greenTab"
+                selectedTab: "tab1"
               });
             }}
           >
@@ -121,10 +121,11 @@ class Home extends React.Component {
             }}
             title="我的"
             key="my"
-            selected={this.state.selectedTab === "yellowTab"}
+            selected={this.state.selectedTab === "tab2"}
             onPress={() => {
+              setTitle('我的');
               this.setState({
-                selectedTab: "yellowTab"
+                selectedTab: "tab2"
               });
             }}
           >

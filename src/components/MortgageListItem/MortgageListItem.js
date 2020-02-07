@@ -1,6 +1,8 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import { Flex, Checkbox, List, WhiteSpace } from "antd-mobile";
 import styles from "./MortgageListItem.module.scss";
+
 const AgreeItem = Checkbox.AgreeItem;
 const Item = List.Item;
 const MortgageListItem = props => {
@@ -11,11 +13,20 @@ const MortgageListItem = props => {
     remark,
     lastProcessingDate,
     overDueDays,
-    isDataComplete
+    isDataComplete,
+    saleServiceGUID,
+    canGetProcess
   } = props;
+
+  let history = useHistory();
+  const handleItemClk = (e)=>{
+    history.push({ pathname:'/detail',state:{saleServiceGUID}});
+    console.log('handleItemClk:', e);
+  }
+
   return (
     <div>
-      <Item className={styles.item}>
+      <Item className={styles.item} onClick={handleItemClk}>
         <AgreeItem className={styles.agreeItem}>
           <Flex justify="between">
             <Flex.Item>
@@ -59,7 +70,8 @@ MortgageListItem.defaultProps = {
   remark: "test",
   lastProcessingDate: "test",
   overDueDays: 0,
-  isDataComplete: true
+  isDataComplete: true,
+  saleServiceGUID: ''
 };
 
 export default MortgageListItem;

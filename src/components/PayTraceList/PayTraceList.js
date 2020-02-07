@@ -18,7 +18,7 @@ const PayTraceList = props => {
   return (
     <div>
       <Accordion>
-        {renderData.map(data => {
+        {renderData.map((data, idx) => {
           return (
             <Accordion.Panel
               header={HeaderContent({
@@ -27,13 +27,14 @@ const PayTraceList = props => {
                   : "test",
                 extraText: data.TotalMoney + "万"
               })}
+              key={idx}
             >
-              {data.List.map(val => {
+              {data.List.map((val, index) => {
                 const item = unSignedPayTraceFormat(val);
                 const props = {
                   ...item
                 };
-                return <PayTraceListItem {...props} />;
+                return <PayTraceListItem key={index} {...props} />;
               })}
             </Accordion.Panel>
           );

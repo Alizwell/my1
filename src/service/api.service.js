@@ -1,9 +1,11 @@
 import axios from "axios";
-import { getTokenFromStore } from "../redux/selectors/user.select";
+import { getTokenFromStore } from "../redux/selectors/user.selector";
+import { getProjectInfo } from "../redux/selectors/project.selector";
 import qs from "qs";
 
 // const baseURL = "http://39.98.108.23/webapi";
-const baseURL = "http://localhost:3000/webapi/";
+// const baseURL = "http://localhost:3000/webapi/";
+const baseURL = "http://192.168.1.4:3000/webapi/";
 // application/x-www-form-urlencoded; charset=utf-8;
 // application/json; charset=utf-8;
 let headers = {
@@ -18,14 +20,20 @@ let api = axios.create({
 api.interceptors.request.use(
   config => {
     const userToken = getTokenFromStore();
+    const [bUGUID, projGUID] = getProjectInfo();
     config.baseURL = baseURL;
-    console.log("userToken:", userToken);
     if (userToken) {
       config.headers.Authorization = `bearer ${userToken}`;
-      console.log(`bearer ${userToken}`);
     }
     if (config.method === "post") {
       config.data = qs.stringify(config.data);
+    }
+    if(config.method === "get"){
+      config.data = {
+        ...config.data,
+        bUGUID: bUGUID.join(','),
+        projGUID: projGUID.join(',')
+      }
     }
     return config;
   },

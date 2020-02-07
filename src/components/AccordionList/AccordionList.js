@@ -18,22 +18,23 @@ const AccordionList = props => {
   return (
     <div>
       <Accordion>
-        {handlingData.map(data => {
+        {handlingData.map((data, index) => {
           return (
             <Accordion.Panel
               header={HeaderContent({
                 header: data.MortgageLoanProcess,
                 extraText: data.TotalMoney + "万"
               })}
+              key={index}
             >
-              {data.List.map(val => {
+              {data.List.map((val, idx) => {
                 const item = unhandledMortgageFormat(val);
                 const props = {
                   ...item,
                   overDueDays: item.mortgageOverdueDays,
                   isDataComplete: item.isNoInformationReceived
                 };
-                return <MortgageListItem {...props} />;
+                return <MortgageListItem key={idx} {...props} />;
               })}
             </Accordion.Panel>
           );

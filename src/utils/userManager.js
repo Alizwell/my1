@@ -1,8 +1,15 @@
-import { tokenValidate } from "../service/account";
+import { tokenValidate } from "../service/account.service";
+import { cookies } from 'brownies';
+
 export const userManager = {
-  checkUserAuthorized: token => {
-    return tokenValidate(token).then(data => {
-      return false;
+  checkUserAuthorized: () => {
+    //we need to verify the exist of token and username in the cookie
+    let tokenInfo = cookies.tokenInfo;
+    if( !tokenInfo ) { return false; }
+    let {username, token} = tokenInfo;
+    return tokenValidate({username, token}).then(data => {
+      // return data.data.HttpContent;
+      return true;
     });
   }
 };

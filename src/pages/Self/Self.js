@@ -1,34 +1,51 @@
 import React from 'react';
-import { Accordion, List, Checkbox, Flex } from 'antd-mobile';
+import { connect } from 'react-redux';
+import { Accordion, List, Checkbox } from 'antd-mobile';
 import { getProject } from '../../service/project.service';
 import { projectInfoFormat } from '../../adaptor/projectInfo.adaptor';
-const CheckboxItem = Checkbox.CheckboxItem;
-const AgreeItem = Checkbox.AgreeItem;
+import { addBuGUID, addProjGUID, delBuGUID, delProjGUID } from '../../redux/action/project';
 
-const leafItem = ({projName})=>{
+import { setTitle } from '../../utils/title';
+import styles from './Self.module.scss';
+
+const CheckboxItem = Checkbox.CheckboxItem;
+
+const leafItem = ({projName, buguid, projGUID}, {addBuGUID, addProjGUID, delBuGUID, delProjGUID})=>{
+  function onCheckboxChange (e, buguid, projGUID) {
+    const { checked } = e.target;
+    if (checked) {
+      addBuGUID(buguid);
+      addProjGUID(projGUID);
+    } else {
+      delBuGUID(buguid);
+      delProjGUID(projGUID);
+    }
+  }
   return (
-    <CheckboxItem>
+    <CheckboxItem  key={projGUID} onChange={(e) => onCheckboxChange(e, buguid, projGUID)}>
       {projName}
     </CheckboxItem>
   )
 }
 
-const projectTree = (renderData)=>{
-  debugger;
+const projectTree = (renderData, actions)=>{
   const formatData = projectInfoFormat(renderData);
   const subItem = formatData.children.length > 0 
     ? (
-      <Accordion>
+      <Accordion key={formatData.projGUID}>
         <Accordion.Panel header={formatData.projName}>
-          {formatData.children.map(item=>{
-            return projectTree(item)
+          {formatData.children.map((item, index) =>{
+            return (
+                <div className={styles.headerSpace} key={index}>
+                  {projectTree(item, actions)}
+                </div>
+              )
           })}
         </Accordion.Panel>
       </Accordion>)
-    : leafItem(formatData)
+    : leafItem(formatData, actions)
   return subItem;
 }
-
 
 
 class Self extends React.Component {
@@ -38,38 +55,21 @@ class Self extends React.Component {
     }
   }
   componentDidMount(){
+    setTitle("我的");
     getProject({}).then(data=>{
-      console.log(data);
       this.setState({
         renderData: data.data.HttpContent[0]
       })
     })
   }
 
-  onChange = (val) => {
-    console.log(val);
-  }
   render() {
-    // const data = [
-    //   { value: 0, label: 'Ph.D.' },
-    //   { value: 1, label: 'Bachelor' },
-    //   { value: 2, label: 'College diploma' },
-    //   { value: 3, label: 'College diploma1' },
-    //   { value: 4, label: 'College diploma2' },
-    // ];
+    const {addBuGUID, addProjGUID, delBuGUID, delProjGUID} = this.props;
     return (<div>
       <List renderHeader={() => '请选择项目'}>
-        {projectTree(this.state.renderData)}
-        {/* {data.map(i => (
-          <CheckboxItem key={i.value} onChange={() => this.onChange(i.value)}>
-            {i.label}
-          </CheckboxItem>
-        ))}
-        <CheckboxItem key="disabled" data-seed="logId" disabled defaultChecked multipleLine>
-          Undergraduate<List.Item.Brief>Auxiliary text</List.Item.Brief>
-        </CheckboxItem> */}
+        {projectTree(this.state.renderData, {addBuGUID, addProjGUID, delBuGUID, delProjGUID})}
       </List>
     </div>);
   }
 }
-export default Self;
+export default connect(null, { addBuGUID, addProjGUID, delBuGUID, delProjGUID })(Self);

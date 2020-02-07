@@ -1,7 +1,10 @@
 import { SET_TOKEN, SET_USER_INFO } from "../const/user";
 
 const initialState = {
-  token: "",
+  tokenInfo: {
+    username: '',
+    token: ''
+  },
   uesrInfo: {}
 };
 
@@ -11,7 +14,9 @@ const reducer = (state = initialState, action) => {
     case SET_TOKEN: {
       return {
         ...state,
-        token: payload
+        tokenInfo: {
+          ...payload
+        }
       };
     }
     case SET_USER_INFO: {
@@ -24,7 +29,6 @@ const reducer = (state = initialState, action) => {
       };
     }
     default:
-      console.error("no action find");
       return state;
   }
 };
