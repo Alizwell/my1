@@ -1,32 +1,39 @@
 import React, { Component, Suspense } from "react";
 import "antd-mobile/dist/antd-mobile.css";
 import { Route, Redirect, Switch } from "react-router-dom";
+import { connect } from "react-redux";
 import routes from "./router/router";
 import { GlobalStyle } from "./style";
-import { userManager } from "./utils/userManager";
+import { updateAuth } from "./redux/action/user";
 import "./index.css";
 
 class App extends Component {
-  state = {
-    isUserAuthorized: null,
-    initialPath: "/home"
-  };
-
-  async componentDidMount () {
-    const isValid = await this.checkUserAuthorized();
-    if(isValid){
-      //we need to update user info in redux
-      
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      initialPath: "/home",
+      isUserAuthorized: this.props.isUserAuthorized
+    };
   }
-  checkUserAuthorized = async () => {
-    const isUserAuthorized = await userManager.checkUserAuthorized();
-    console.log("isUserAuthorized: ", isUserAuthorized);
-    this.setState({ isUserAuthorized });
-    return isUserAuthorized;
-  };
+
+  // async componentWillMount() {
+  //   console.log("componentWillMount 1");
+  //   await this.props.updateAuth();
+  //   console.log("componentWillMount 2");
+  // }
+
+  componentDidMount() {
+    console.log("didmount 1");
+    // await this.props.updateAuth();
+    console.log("didmount 2");
+    document.body.addEventListener("focusout", () => {
+      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    });
+  }
 
   render() {
+    const { isUserAuthorized } = this.props;
+    console.log("isUserAuthorized:", isUserAuthorized);
     return (
       <div className="App">
         <Suspense fallback={<div>Loading</div>}>
@@ -36,13 +43,13 @@ class App extends Component {
                 key={index}
                 path={route.path}
                 exact={route.exact}
-                render={(props) => {
+                render={props => {
                   if (route.requiresAuth) {
-                    if (this.state.isUserAuthorized === true) {
+                    if (isUserAuthorized === true) {
                       return <route.component />;
-                    } else if (this.state.isUserAuthorized === null) {
+                    } else if (isUserAuthorized === null) {
                       return <div>loading</div>;
-                    } else if (this.state.isUserAuthorized === false) {
+                    } else if (isUserAuthorized === false) {
                       return <Redirect to={{ pathname: "/login" }} />;
                     }
                   } else {
@@ -60,4 +67,10 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    isUserAuthorized: state.userContext.isUserAuthorized
+  };
+};
+
+export default connect(mapStateToProps, { updateAuth })(App);

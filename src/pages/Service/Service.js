@@ -1,11 +1,7 @@
 import React from "react";
 import { List } from "antd-mobile";
 import { Link } from "react-router-dom";
-
-// import CommonFound from '../CommonFound';
-// import Mortgage from '../Mortgage';
-// import Contract from '../Contract';
-
+import { Helmet } from "react-helmet";
 const Item = List.Item;
 
 class Service extends React.Component {
@@ -16,6 +12,9 @@ class Service extends React.Component {
   render() {
     return (
       <div>
+        <Helmet>
+          <title>售后服务</title>
+        </Helmet>
         <List>
           <Item thumb="https://zos.alipayobjects.com/rmsportal/dNuvNrtqUztHCwM.png">
             <Link to="/home/service/contract">合同登记服务</Link>

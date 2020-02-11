@@ -1,23 +1,28 @@
 import React from "react";
-
+import { Helmet } from "react-helmet";
 import {
   unHandledContract,
   handlingContract,
   handledContract
 } from "../../service/afterSale.service";
 
-import AfterSale from '../AfterSale';
-import { setTitle } from '../../utils/title';
+import AfterSale from "../AfterSale";
 
-const Contract = ()=>{
+const Contract = () => {
   const loadData = {
     loadTabs0: unHandledContract,
     loadTabs1: handlingContract,
     loadTabs2: handledContract
-  }
-  setTitle("合同登记服务");
-  return <AfterSale  {...loadData} />
-}
+  };
 
+  return (
+    <>
+      <Helmet>
+        <title>合同登记服务</title>
+      </Helmet>
+      <AfterSale {...loadData} />
+    </>
+  );
+};
 
 export default Contract;

@@ -14,7 +14,7 @@ const HeaderContent = ({ header, extraText }) => {
 };
 
 const PayTraceList = props => {
-  const { data: renderData } = props;
+  const { data: renderData, followUpHandle } = props;
   return (
     <div>
       <Accordion>
@@ -32,7 +32,11 @@ const PayTraceList = props => {
               {data.List.map((val, index) => {
                 const item = unSignedPayTraceFormat(val);
                 const props = {
-                  ...item
+                  ...item,
+                  endDate: item.lastDate,
+                  unpaidMoney: item.money,
+                  followUpHandle: followUpHandle,
+                  data: item
                 };
                 return <PayTraceListItem key={index} {...props} />;
               })}

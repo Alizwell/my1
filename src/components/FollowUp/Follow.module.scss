@@ -1,0 +1,20 @@
+.fllowUp {
+  position: fixed;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: #fff;
+  bottom: 0;
+  height: 50px;
+  width: 100%;
+
+  & > a {
+    height: 50px;
+    line-height: 50px;
+    border-radius: 0;
+  }
+
+  & > a:first-child {
+    border-right: 1px solid #fff;
+  }
+}

@@ -1,5 +1,5 @@
 import React from "react";
-
+import { Helmet } from 'react-helmet';
 import {
   unHandledMortgageLoan,
   handlingMortgageLoan,
@@ -7,7 +7,6 @@ import {
 } from "../../service/afterSale.service";
 
 import AfterSale from '../AfterSale';
-import { setTitle } from '../../utils/title';
 
 const Mortgage = ()=>{
   const loadData = {
@@ -15,9 +14,14 @@ const Mortgage = ()=>{
     loadTabs1: handlingMortgageLoan,
     loadTabs2: handledMortgageLoan
   }
-  setTitle("按揭贷款服务");
-  return <AfterSale  {...loadData} />
+  return (
+    <>
+      <Helmet>
+        <title>按揭贷款服务</title>
+      </Helmet>
+      <AfterSale  {...loadData} />
+    </>
+  )
 }
-
 
 export default Mortgage;

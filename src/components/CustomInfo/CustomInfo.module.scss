@@ -1,0 +1,15 @@
+.wrapRadio {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  .radioItem {
+    flex-basis: 100px;
+    :global {
+      .am-list-line {
+        &::after {
+          display: none !important;
+        }
+      }
+    }
+  }
+}

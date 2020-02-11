@@ -5,18 +5,43 @@
 .item {
   width: 100%;
   padding-left: 0;
+  :global {
+    .am-list-line {
+      padding-right: 0;
+    }
+  }
 }
 
 .agreeItem {
   width: 100%;
+  margin-left: 0;
   :global {
     .am-checkbox-agree-label {
       width: 100%;
+      margin-left: 0;
+    }
+
+    .am-checkbox {
+      width: 40px;
+    }
+
+    .am-checkbox-inner {
+      left: 10px;
+    }
+    .listItemContent {
+      width: 100%;
+      padding-left: 40px;
+      padding-right: 1rem;
     }
 
     .rightText {
       text-align: right;
-      padding-right: 1rem;
     }
   }
+}
+
+.remarkText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

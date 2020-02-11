@@ -14,7 +14,7 @@ const HeaderContent = ({ header, extraText }) => {
 };
 
 const AccordionList = props => {
-  const { data: handlingData } = props;
+  const { data: handlingData, followUpHandle } = props;
   return (
     <div>
       <Accordion>
@@ -32,7 +32,9 @@ const AccordionList = props => {
                 const props = {
                   ...item,
                   overDueDays: item.mortgageOverdueDays,
-                  isDataComplete: item.isNoInformationReceived
+                  isDataComplete: item.isNoInformationReceived,
+                  followUpHandle: followUpHandle,
+                  data: item
                 };
                 return <MortgageListItem key={idx} {...props} />;
               })}

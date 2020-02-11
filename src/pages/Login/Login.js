@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Button, Toast } from "antd-mobile";
 import { useHistory } from "react-router-dom";
-import { testLogin } from "../../service/account.service";
+import { testLogin, login } from "../../service/account.service";
 import { setToken, setUserInfo } from "../../redux/action/user";
 import { addBuGUID, addProjGUID } from "../../redux/action/project";
 import styles from "./login.module.scss";
 import { cookies } from "brownies";
-import { setTitle } from '../../utils/title';
+import { updateAuth } from "../../redux/action/user";
 
-const Login = ({ setToken, setUserInfo }) => {
+const Login = ({ setToken, setUserInfo, updateAuth }) => {
   let history = useHistory();
   const [formData, setFormData] = useState({
     userName: "",
@@ -21,10 +21,6 @@ const Login = ({ setToken, setUserInfo }) => {
   useEffect(() => {
     setCanSubmit(formData.userName && formData.passwd);
   }, [formData]);
-
-  useEffect(()=>{
-    setTitle("回款跟进");
-  }, [])
 
   const changeFormdata = e => {
     let { name, value } = e.target;
@@ -39,15 +35,15 @@ const Login = ({ setToken, setUserInfo }) => {
     delete cookies.tokenInfo;
     setCanSubmit(false);
     Toast.loading(null, 0, null, true);
-    testLogin({ name: formData.userName, password: formData.passwd })
-      .then(res => {
+    login({ name: formData.userName, password: formData.passwd })
+      .then(async res => {
         if (res && res.data && res.data.StatusCode === 200) {
           if (res && res.data && res.data.HttpContent) {
             const userInfo = res.data.HttpContent.UserInfo;
-            if(res.data.HttpContent.TokenInfo){
+            if (res.data.HttpContent.TokenInfo) {
               const token = res.data.HttpContent.TokenInfo.access_token;
               const username = res.data.HttpContent.TokenInfo.userName;
-              setToken({
+              await setToken({
                 username,
                 token
               });
@@ -56,8 +52,10 @@ const Login = ({ setToken, setUserInfo }) => {
           }
 
           Toast.hide();
+          await updateAuth();
           //need to redirect
-          history.push("/home");
+          console.log("login success");
+          history.push("/home/service");
         } else {
           Toast.hide();
           Toast.info(res && res.data && res.data.HttpRequestMessage);
@@ -102,4 +100,4 @@ const Login = ({ setToken, setUserInfo }) => {
   );
 };
 
-export default connect(null, { setToken, setUserInfo })(Login);
+export default connect(null, { setToken, setUserInfo, updateAuth })(Login);

@@ -16,12 +16,26 @@ const PayTraceListItem = props => {
     dataCreated,
     unSignedReason,
     estimatedSigningTime,
-    unpaidMoney
+    unpaidMoney,
+    data,
+    followUpHandle,
+    canGetProcess
   } = props;
+
+  const onChange = (e)=>{
+    e.stopPropagation();
+    const { checked } = e.target;
+    if (checked) {
+      followUpHandle && followUpHandle({...data, key: data.tradeGUID}, 'push')
+    }else{
+      followUpHandle && followUpHandle(data.tradeGUID, 'del')
+    }
+  }
   return (
     <div>
       <Item className={styles.item}>
-        <AgreeItem className={styles.agreeItem}>
+        <AgreeItem className={styles.agreeItem} onChange={onChange}>
+        <div className={'listItemContent'} >
           <Flex justify="between">
             <Flex.Item>
               <b>{buildingNo}</b>
@@ -57,6 +71,7 @@ const PayTraceListItem = props => {
               <span>闭合时间: {timeFormat(endDate)}</span>
             </Flex.Item>
           </Flex>
+          </div>
         </AgreeItem>
       </Item>
     </div>
@@ -64,15 +79,11 @@ const PayTraceListItem = props => {
 };
 
 PayTraceListItem.defaultProps = {
-  buildingNo: "6栋301test",
-  customName: "黄先生test",
+  buildingNo: "test",
+  customName: "test",
   paymentMethod: "测试",
   overdueDays: 0,
-  dataCreated: "2020测试",
-  unSignedReason: "限签测试",
-  endDate: "2020测试",
   estimatedSigningTime: "2019-12-31",
-  unpaidMoney: "2020"
 };
 
 export default PayTraceListItem;

@@ -4,8 +4,7 @@ import PayTrace from "../PayTrace";
 import Self from "../Self";
 import Service from "../Service";
 import { Switch, Route } from "react-router-dom";
-
-import { setTitle }  from '../../utils/title';
+import { withRouter } from "react-router";
 import CommonFound from "../CommonFound";
 import Mortgage from "../Mortgage";
 import Contract from "../Contract";
@@ -19,6 +18,10 @@ class Home extends React.Component {
       hidden: false,
       fullScreen: true
     };
+  }
+
+  componentDidMount() {
+    this.props.history.replace("/home/service");
   }
 
   render() {
@@ -62,7 +65,7 @@ class Home extends React.Component {
             badge={"new"}
             selected={this.state.selectedTab === "tab0"}
             onPress={() => {
-              setTitle('售后服务');
+              this.props.history.replace("/home/service");
               this.setState({
                 selectedTab: "tab0"
               });
@@ -70,9 +73,12 @@ class Home extends React.Component {
             data-seed="logId1"
           >
             <Switch>
-              <Route exact path="/home" children={<Service />} />
+              <Route exact path="/home/service" children={<Service />} />
               <Route path="/home/service/mortgage" children={<Mortgage />} />
-              <Route path="/home/service/commonFound" children={<CommonFound />}/>
+              <Route
+                path="/home/service/commonFound"
+                children={<CommonFound />}
+              />
               <Route path="/home/service/contract" children={<Contract />} />
             </Switch>
           </TabBar.Item>
@@ -102,13 +108,15 @@ class Home extends React.Component {
             dot
             selected={this.state.selectedTab === "tab1"}
             onPress={() => {
-              setTitle('回款跟进');
+              this.props.history.replace("/home/payTrace");
               this.setState({
                 selectedTab: "tab1"
               });
             }}
           >
-            <PayTrace />
+            <Switch>
+              <Route exact path="/home/payTrace" children={<PayTrace />} />
+            </Switch>
           </TabBar.Item>
           <TabBar.Item
             icon={{
@@ -123,13 +131,15 @@ class Home extends React.Component {
             key="my"
             selected={this.state.selectedTab === "tab2"}
             onPress={() => {
-              setTitle('我的');
+              this.props.history.replace("/home/self");
               this.setState({
                 selectedTab: "tab2"
               });
             }}
           >
-            <Self />
+            <Switch>
+              <Route exact path="/home/self" children={<Self />} />
+            </Switch>
           </TabBar.Item>
         </TabBar>
       </div>
@@ -137,4 +147,4 @@ class Home extends React.Component {
   }
 }
 
-export default Home;
+export default withRouter(Home);

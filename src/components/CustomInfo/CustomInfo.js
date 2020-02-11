@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { List, InputItem, DatePicker, Picker, TextareaItem  } from 'antd-mobile';
+import { List, InputItem, DatePicker, Picker, TextareaItem, Radio, Button, WhiteSpace, WingBlank } from 'antd-mobile';
 import styles from './CustomInfo.module.scss'
+
+const RadioItem = Radio.RadioItem;
 
 const CustomInfo = ()=>{
     const [formData, setFormData] = useState({
@@ -13,7 +15,13 @@ const CustomInfo = ()=>{
       mortgageLoan: '',
       remark: ''
     })
-
+    
+    const onRadioChange = (val)=>{
+      setFormData( prev =>({
+        ...prev,
+        radioData: val
+      }))
+    }
     const onInputChange = (name, val)=>{
       setFormData( prev =>({
         ...prev,
@@ -37,8 +45,15 @@ const CustomInfo = ()=>{
       value: '夏',
     }]
     return (
+      <>
         <List>
-            <Picker data={pickerData} cols={1}>
+            <Picker 
+              data={pickerData}
+              cols={1}
+              value={formData.payMethod}
+              onChange={v => onInputChange('payMethod', v)}
+              onOk={v => onInputChange('payMethod', v)}
+            >
               <List.Item arrow="horizontal">付款方式</List.Item>
             </Picker>
             <DatePicker
@@ -57,11 +72,17 @@ const CustomInfo = ()=>{
             >合同总价</InputItem>
             <InputItem
               type="money"
-              editable="false"
+              editable={false}
               moneyKeyboardAlign="right"
               value={formData.currencyType}
             >币种</InputItem>
-            <Picker data={pickerData} cols={1}>
+            <Picker 
+              data={pickerData} 
+              cols={1}
+              value={formData.mortgageBank}
+              onChange={v => onInputChange('mortgageBank', v)}
+              onOk={v => onInputChange('mortgageBank', v)}
+            >
               <List.Item arrow="horizontal">按揭银行</List.Item>
             </Picker>
             <InputItem
@@ -75,7 +96,7 @@ const CustomInfo = ()=>{
               onChange={val=>onInputChange('mortgageLoan', val)}
             >按揭贷款</InputItem>
             <InputItem
-              type="phone"
+              type="text"
             >业务员</InputItem>
             <DatePicker
               mode="date"
@@ -101,9 +122,17 @@ const CustomInfo = ()=>{
             <InputItem
               type="phone"
             >未收到的资料</InputItem>
-            <InputItem
-              type="phone"
-            >是否收齐</InputItem>
+            <List.Item>
+                <div className={styles.wrapRadio}>
+                  <span>是否收齐:</span>
+                  <RadioItem className={styles.radioItem} key={0} checked={0 === formData.radioData} onChange={() => onRadioChange(0)}>
+                    未收齐
+                  </RadioItem>
+                  <RadioItem className={styles.radioItem} key={1} checked={1 === formData.radioData} onChange={() => onRadioChange(1)}>
+                    收齐
+                  </RadioItem>
+                </div>
+            </List.Item>
             <TextareaItem
               title="备注"
               autoHeight
@@ -111,6 +140,11 @@ const CustomInfo = ()=>{
               onChange={val=>onInputChange('remark', val)}
             />
         </List>
+        <WingBlank>
+          <Button type="primary">提交</Button>
+          <WhiteSpace />
+        </WingBlank>
+      </>
     )
 }
 

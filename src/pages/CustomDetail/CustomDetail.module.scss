@@ -18,6 +18,7 @@
   .headerAvator {
     flex-grow: 0;
     flex-basis: 80px;
+    padding-left: 20px;
   }
 
   .headerDesc {
@@ -29,7 +30,9 @@
   }
   .headerTail {
     color: red;
-    height: 50px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: 90px;
     p {
       height: 25px;
       line-height: 25px;
@@ -43,7 +46,6 @@
     flex-basis: 100px;
     flex-grow: 0;
     width: 100%;
-    padding: 0 20px;
     background-color: #6190e8;
   }
 
