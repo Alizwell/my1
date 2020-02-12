@@ -21,7 +21,29 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-    this.props.history.replace("/home/service");
+    let pathName = this.props.history.location.pathname;
+    if (pathName === "/home") {
+      this.setState({
+        selectedTab: "tab0"
+      });
+      this.props.history.replace("/home/service");
+    } else if (pathName === "/home/payTrace") {
+      this.setState({
+        selectedTab: "tab1"
+      });
+    } else if (pathName === "/home/service") {
+      this.setState({
+        selectedTab: "tab0"
+      });
+    } else if (pathName === "/home/self") {
+      this.setState({
+        selectedTab: "tab2"
+      });
+    } else {
+      this.setState({
+        selectedTab: "tab0"
+      });
+    }
   }
 
   render() {
@@ -62,7 +84,6 @@ class Home extends React.Component {
             }
             title="售后服务"
             key="Service"
-            badge={"new"}
             selected={this.state.selectedTab === "tab0"}
             onPress={() => {
               this.props.history.replace("/home/service");
@@ -105,7 +126,6 @@ class Home extends React.Component {
             }
             title="回款跟进"
             key="PayTrace"
-            dot
             selected={this.state.selectedTab === "tab1"}
             onPress={() => {
               this.props.history.replace("/home/payTrace");

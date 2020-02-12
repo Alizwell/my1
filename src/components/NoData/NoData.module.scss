@@ -1,8 +1,25 @@
 .nodataWrapper {
   height: 100%;
   width: 100%;
-  background-image: url("/img/no-data-icon.svg");
+  background-image: url("../../assets/imgs/no-data-icon.svg");
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;
+}
+
+.noDataPull {
+  height: 100%;
+  width: 100%;
+  :global {
+    .am-pull-to-refresh-content-wrapper {
+      height: 100%;
+
+      .am-pull-to-refresh-content {
+        height: 100%;
+        & > div:nth-child(2) {
+          height: 100%;
+        }
+      }
+    }
+  }
 }

@@ -8,6 +8,7 @@ import { addBuGUID, addProjGUID } from "../../redux/action/project";
 import styles from "./login.module.scss";
 import { cookies } from "brownies";
 import { updateAuth } from "../../redux/action/user";
+import { setTokenInfoToCookie, setUserInfoToCookie } from "../../utils/cookie";
 
 const Login = ({ setToken, setUserInfo, updateAuth }) => {
   let history = useHistory();
@@ -35,7 +36,7 @@ const Login = ({ setToken, setUserInfo, updateAuth }) => {
     delete cookies.tokenInfo;
     setCanSubmit(false);
     Toast.loading(null, 0, null, true);
-    login({ name: formData.userName, password: formData.passwd })
+    testLogin({ name: formData.userName, password: formData.passwd })
       .then(async res => {
         if (res && res.data && res.data.StatusCode === 200) {
           if (res && res.data && res.data.HttpContent) {
@@ -49,12 +50,13 @@ const Login = ({ setToken, setUserInfo, updateAuth }) => {
               });
             }
             setUserInfo(userInfo);
+            setTokenInfoToCookie(res.data.HttpContent.TokenInfo);
+            setUserInfoToCookie(res.data.HttpContent.UserInfo);
           }
 
           Toast.hide();
           await updateAuth();
           //need to redirect
-          console.log("login success");
           history.push("/home/service");
         } else {
           Toast.hide();

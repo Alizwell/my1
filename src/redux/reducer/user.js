@@ -1,13 +1,13 @@
 import { SET_TOKEN, SET_USER_INFO, SET_AUTH } from "../const/user";
-import { cookies } from 'brownies';
+import { isTokenValid } from "../../utils/cookie";
 
 const initialState = {
   tokenInfo: {
-    username: '',
-    token: ''
+    username: "",
+    token: ""
   },
   uesrInfo: {},
-  isUserAuthorized: cookies.tokenInfo ? true : false
+  isUserAuthorized: isTokenValid()
 };
 
 const reducer = (state = initialState, action) => {
@@ -34,7 +34,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         isUserAuthorized: payload
-      }
+      };
     }
     default:
       return state;

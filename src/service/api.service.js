@@ -20,7 +20,7 @@ let api = axios.create({
 api.interceptors.request.use(
   config => {
     const userToken = getTokenFromStore();
-    const [bUGUID, projGUID] = getProjectInfo();
+    let [bUGUID, projGUID] = getProjectInfo();
     config.baseURL = baseURL;
     if (userToken) {
       config.headers.Authorization = `bearer ${userToken}`;
@@ -29,10 +29,14 @@ api.interceptors.request.use(
       config.data = qs.stringify(config.data);
     }
     if (config.method === "get") {
-      config.data = {
-        ...config.data,
-        bUGUID: bUGUID.join(","),
-        projGUID: projGUID.join(",")
+      //teset code
+      projGUID = [];
+      bUGUID = [];
+      //teset code
+      config.params = {
+        ...config.params,
+        bUGUID: bUGUID.length > 0 ? bUGUID.join(",") : null,
+        projGUID: projGUID.length > 0 ? projGUID.join(",") : null
       };
     }
     return config;
@@ -47,11 +51,12 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   res => res,
   err => {
-    console.log(err, "--err");
-    console.error(err);
+    console.error(err.response);
     // const history = useHistory();
-    if (err.status === 401) {
+    if (err.response.status === 401) {
       // history.push('/login');
+      const href = window.location.href.split("#")[0] + "#/login";
+      window.location.replace(href);
     }
     //common place to handle errors, don't catch the http error yourself if you have no special case.
     //do the unify http error hanlding logic here.

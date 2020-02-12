@@ -92,3 +92,15 @@ export const handledContract = (params) => handledAfterSale({
   ...params,
   serviceProcess:"合同登记"
 })
+
+export const getLoanBank = ({
+  bUGUID,
+  dataFilter
+})=>{
+  return api.get('/api/MortgageLoan/LoanBankQuery', {
+    params: {
+      bUGUID,
+      dataFilter
+    }
+  })
+}

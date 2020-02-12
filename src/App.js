@@ -16,16 +16,7 @@ class App extends Component {
     };
   }
 
-  // async componentWillMount() {
-  //   console.log("componentWillMount 1");
-  //   await this.props.updateAuth();
-  //   console.log("componentWillMount 2");
-  // }
-
   componentDidMount() {
-    console.log("didmount 1");
-    // await this.props.updateAuth();
-    console.log("didmount 2");
     document.body.addEventListener("focusout", () => {
       window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     });
@@ -33,7 +24,6 @@ class App extends Component {
 
   render() {
     const { isUserAuthorized } = this.props;
-    console.log("isUserAuthorized:", isUserAuthorized);
     return (
       <div className="App">
         <Suspense fallback={<div>Loading</div>}>

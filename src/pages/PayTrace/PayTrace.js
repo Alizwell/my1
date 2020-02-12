@@ -19,10 +19,11 @@ import {
   mortgagePayTraceFormat
 } from "../../adaptor/payTrace.adaptor";
 import { Helmet } from "react-helmet";
-import { setTitle } from "../../utils/title";
 import { delWithProps } from "../../utils/array";
 import FollowUp from "../../components/FollowUp";
 import styles from "./PayTrace.module.scss";
+import SelectSearch from "../../components/SelectSearch";
+import NoData from "../../components/NoData";
 
 const tabs = [{ title: "未签约" }, { title: "非按揭" }, { title: "按揭" }];
 
@@ -49,45 +50,57 @@ class PayTrace extends React.Component {
         tabs0: [],
         tabs1: [],
         tabs2: []
-      }
+      },
+      params: {}
     };
   }
 
   componentDidMount() {
-    setTitle("回款跟进");
     this.loadTabs0WithLoading();
     this.loadTabs1WithLoading();
     this.loadTabs2WithLoading();
   }
 
-  loadWithLoading = async (loadFun, loadingName) => {
+  loadWithLoading = async (loadFun, loadingName, params = {}) => {
     this.setState({
       [loadingName]: true
     });
-    await loadFun();
+    await loadFun(params);
     this.setState({
       [loadingName]: false
     });
   };
 
-  loadTabs0WithLoading = () =>
-    this.loadWithLoading(this.loadDataTabs0, "tabs0Loading");
+  loadTabs0WithLoading = (params = {}) =>
+    this.loadWithLoading(this.loadDataTabs0, "tabs0Loading", params);
 
-  loadTabs1WithLoading = () =>
-    this.loadWithLoading(this.loadDataTabs1, "tabs1Loading");
+  loadTabs1WithLoading = (params = {}) =>
+    this.loadWithLoading(this.loadDataTabs1, "tabs1Loading", params);
 
-  loadTabs2WithLoading = () =>
-    this.loadWithLoading(this.loadDataTabs2, "tabs2Loading");
+  loadTabs2WithLoading = (params = {}) =>
+    this.loadWithLoading(this.loadDataTabs2, "tabs2Loading", params);
 
   loaTabs0WithRefresh = () =>
-    this.loadWithLoading(this.loadDataTabs0, "tab0Refreshing");
+    this.loadWithLoading(
+      this.loadDataTabs0,
+      "tab0Refreshing",
+      this.state.params
+    );
   loaTabs1WithRefresh = () =>
-    this.loadWithLoading(this.loadDataTabs1, "tab1Refreshing");
+    this.loadWithLoading(
+      this.loadDataTabs1,
+      "tab1Refreshing",
+      this.state.params
+    );
   loaTabs2WithRefresh = () =>
-    this.loadWithLoading(this.loadDataTabs2, "tab2Refreshing");
+    this.loadWithLoading(
+      this.loadDataTabs2,
+      "tab2Refreshing",
+      this.state.params
+    );
 
-  loadDataTabs0 = () => {
-    return unSignedPayTrace({}).then(data => {
+  loadDataTabs0 = (params = {}) => {
+    return unSignedPayTrace({ ...params }).then(data => {
       if (data.data.StatusCode === 200) {
         this.setState({
           notHandled: data.data.HttpContent
@@ -96,21 +109,25 @@ class PayTrace extends React.Component {
     });
   };
 
-  loadDataTabs1 = () => {
-    return notMortgagePayTrace({}).then(data => {
+  loadDataTabs1 = (params = {}) => {
+    return notMortgagePayTrace({ ...params }).then(data => {
       if (data.data.StatusCode === 200) {
         this.setState({
-          handling: data.data.HttpContent[0].List.map(notMortgagePayTraceFormat)
+          handling: data.data.HttpContent[0]
+            ? data.data.HttpContent[0].List.map(notMortgagePayTraceFormat)
+            : []
         });
       }
     });
   };
 
-  loadDataTabs2 = () => {
-    return mortgagePayTrace().then(data => {
+  loadDataTabs2 = (params = {}) => {
+    return mortgagePayTrace({ ...params }).then(data => {
       if (data.data.StatusCode === 200) {
         this.setState({
-          handled: data.data.HttpContent[0].List.map(mortgagePayTraceFormat)
+          handled: data.data.HttpContent[0]
+            ? data.data.HttpContent[0].List.map(mortgagePayTraceFormat)
+            : []
         });
       }
     });
@@ -152,6 +169,12 @@ class PayTrace extends React.Component {
     return this.tabsFollowUp(2)(val, method);
   };
 
+  setParams = params => {
+    this.setState({
+      params
+    });
+  };
+
   render() {
     const showFollowup = () => {
       return this.state.followUp["tabs" + this.state.tabIndex].length > 0 ? (
@@ -163,9 +186,10 @@ class PayTrace extends React.Component {
         <Helmet>
           <title>回款跟进</title>
         </Helmet>
-        <SearchBar
-          placeholder="请输入客户姓名、电话(后四位或全号)或置业顾问姓名"
-          ref={ref => (this.autoFocusInst = ref)}
+        <SelectSearch
+          setParams={this.setParams}
+          loadFunc={this["loadTabs" + this.state.tabIndex + "WithLoading"]}
+          list={[2]}
         />
         <Tabs
           tabs={tabs}
@@ -184,10 +208,24 @@ class PayTrace extends React.Component {
               />
             ) : (
               <List className={styles.list}>
-                <PayTraceList
-                  followUpHandle={this.tabs0FollowUp}
-                  data={this.state.notHandled}
-                />
+                {this.state.notHandled.length > 0 ? (
+                  <PullToRefresh
+                    distanceToRefresh={window.devicePixelRatio * 25}
+                    direction={this.state.direction}
+                    refreshing={this.state.tab0Refreshing}
+                    onRefresh={() => this.loaTabs0WithRefresh()}
+                    style={{
+                      overflow: "auto"
+                    }}
+                  >
+                    <PayTraceList
+                      followUpHandle={this.tabs0FollowUp}
+                      data={this.state.notHandled}
+                    />
+                  </PullToRefresh>
+                ) : (
+                  <NoData onRefresh={this.loaTabs0WithRefresh} />
+                )}
               </List>
             )}
           </div>
@@ -200,26 +238,30 @@ class PayTrace extends React.Component {
               />
             ) : (
               <List className={styles.list}>
-                <PullToRefresh
-                  distanceToRefresh={window.devicePixelRatio * 25}
-                  direction={this.state.direction}
-                  refreshing={this.state.tab1Refreshing}
-                  onRefresh={() => this.loaTabs1WithRefresh()}
-                  style={{
-                    overflow: "auto"
-                  }}
-                >
-                  {this.state.handling.map((item, index) => {
-                    const props = {
-                      ...item,
-                      endDate: item.lastDate,
-                      unpaidMoney: item.money,
-                      followUpHandle: this.tabs1FollowUp,
-                      data: item
-                    };
-                    return <PayTraceListItem key={index} {...props} />;
-                  })}
-                </PullToRefresh>
+                {this.state.handling.length > 0 ? (
+                  <PullToRefresh
+                    distanceToRefresh={window.devicePixelRatio * 25}
+                    direction={this.state.direction}
+                    refreshing={this.state.tab1Refreshing}
+                    onRefresh={() => this.loaTabs1WithRefresh()}
+                    style={{
+                      overflow: "auto"
+                    }}
+                  >
+                    {this.state.handling.map((item, index) => {
+                      const props = {
+                        ...item,
+                        endDate: item.lastDate,
+                        unpaidMoney: item.money,
+                        followUpHandle: this.tabs1FollowUp,
+                        data: item
+                      };
+                      return <PayTraceListItem key={index} {...props} />;
+                    })}
+                  </PullToRefresh>
+                ) : (
+                  <NoData onRefresh={this.loaTabs1WithRefresh} />
+                )}
               </List>
             )}
           </div>
@@ -232,26 +274,30 @@ class PayTrace extends React.Component {
               />
             ) : (
               <List className={styles.list}>
-                <PullToRefresh
-                  distanceToRefresh={window.devicePixelRatio * 25}
-                  direction={this.state.direction}
-                  refreshing={this.state.tab2Refreshing}
-                  onRefresh={() => this.loaTabs2WithRefresh()}
-                  style={{
-                    overflow: "auto"
-                  }}
-                >
-                  {this.state.handled.map((item, index) => {
-                    const props = {
-                      ...item,
-                      endDate: item.lastDate,
-                      unpaidMoney: item.money,
-                      followUpHandle: this.tabs2FollowUp,
-                      data: item
-                    };
-                    return <PayTraceListItem key={index} {...props} />;
-                  })}
-                </PullToRefresh>
+                {this.state.handled.length > 0 ? (
+                  <PullToRefresh
+                    distanceToRefresh={window.devicePixelRatio * 25}
+                    direction={this.state.direction}
+                    refreshing={this.state.tab2Refreshing}
+                    onRefresh={() => this.loaTabs2WithRefresh()}
+                    style={{
+                      overflow: "auto"
+                    }}
+                  >
+                    {this.state.handled.map((item, index) => {
+                      const props = {
+                        ...item,
+                        endDate: item.lastDate,
+                        unpaidMoney: item.money,
+                        followUpHandle: this.tabs2FollowUp,
+                        data: item
+                      };
+                      return <PayTraceListItem key={index} {...props} />;
+                    })}
+                  </PullToRefresh>
+                ) : (
+                  <NoData onRefresh={this.loaTabs2WithRefresh} />
+                )}
               </List>
             )}
           </div>

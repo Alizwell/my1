@@ -1,0 +1,44 @@
+.searchBarWrapper {
+  width: 100%;
+  position: relative;
+  :global {
+    .am-search-synthetic-ph-icon {
+      margin-left: 10px;
+    }
+    .am-search-synthetic-ph-placeholder {
+      // padding-left: 15px;
+    }
+    .am-search-value {
+      text-indent: 1rem;
+    }
+  }
+}
+
+.popover {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  padding: 0 15px;
+  margin-right: -15px;
+  display: flex;
+  align-items: center;
+  z-index: 2;
+
+  span {
+    display: block;
+    height: 28px;
+    background: #fff;
+    line-height: 30px;
+    width: 40px;
+  }
+}
+
+.popoverItem {
+  width: 100px;
+  :global {
+    .am-popover-item-container {
+      justify-content: center;
+    }
+  }
+}

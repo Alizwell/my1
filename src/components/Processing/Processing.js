@@ -42,13 +42,11 @@ const customIcon = () => (
 );
 const StepTitle = ({completeDate, title}, hasDel)=>{
   const handleDel = ()=>{
-    console.log('del item');
     alert('删除', '确认是否删除?', [
       { text: '否', onPress: () => console.log('cancel') },
       { text: '是', onPress: () => console.log('ok') },
     ])
   }
-  console.log('hasDel: ', hasDel);
   return (
     <div>
       <Flex>
@@ -79,7 +77,6 @@ const Processing = ({saleServiceGUID})=>{
     setShowLoading(true);
     const fetchData = async (params) =>{
       await getProcess({}).then(data=>{
-        console.log(data.data.HttpContent, '----data.data.HttpContent');
         if(data.data.HttpContent){
           setProcessData(data.data.HttpContent.slice(0, 3).map(processInfoFormat));
         }
