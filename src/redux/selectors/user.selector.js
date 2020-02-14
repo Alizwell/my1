@@ -7,4 +7,4 @@ export const getTokenFromStore = () => {
   const storeToken = getToken(store.getState());
   const cookieToken = cookies.tokenInfo ? cookies.tokenInfo.access_token : "";
   return storeToken ? storeToken : cookieToken;
-}; 
+};
