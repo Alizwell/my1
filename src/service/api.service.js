@@ -3,9 +3,9 @@ import { getTokenFromStore } from "../redux/selectors/user.selector";
 import { getProjectInfo } from "../redux/selectors/project.selector";
 import qs from "qs";
 
-// const baseURL = "http://39.98.108.23/webapi/";
+const baseURL = "http://39.98.108.23/webapi/";
 // const baseURL = "http://localhost:3000/webapi/";
-const baseURL = "http://192.168.1.5:3000/webapi/";
+// const baseURL = "http://192.168.1.5:3000/webapi/";
 // application/x-www-form-urlencoded; charset=utf-8;
 // application/json; charset=utf-8;
 let headers = {

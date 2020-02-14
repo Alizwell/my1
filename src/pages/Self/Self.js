@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Accordion, List, Checkbox, ActivityIndicator } from "antd-mobile";
+import { Accordion, List, Checkbox, ActivityIndicator, WhiteSpace, Modal } from "antd-mobile";
 import { getProject } from "../../service/project.service";
 import { projectInfoFormat } from "../../adaptor/projectInfo.adaptor";
 import {
@@ -10,9 +10,12 @@ import {
   delProjGUID
 } from "../../redux/action/project";
 import { Helmet } from "react-helmet";
-import { setTitle } from "../../utils/title";
 import styles from "./Self.module.scss";
+import { ReactComponent as Logout } from '../../assets/imgs/icon-logout.svg';
+import { logoutCookie } from '../../utils/cookie'; 
+import { withRouter } from 'react-router';
 
+const alert = Modal.alert;
 const CheckboxItem = Checkbox.CheckboxItem;
 
 const leafItem = (
@@ -74,6 +77,16 @@ class Self extends React.Component {
     });
   }
 
+  onLogout = () =>{
+    alert('退出', '是否需要退出?', [
+      { text: '取消' },
+      { text: '确定', onPress: () => {
+        logoutCookie();
+        this.props.history.replace('/login');
+      } },
+    ])
+  }
+
   render() {
     const { addBuGUID, addProjGUID, delBuGUID, delProjGUID } = this.props;
     return (
@@ -82,14 +95,21 @@ class Self extends React.Component {
           <title>我的</title>
         </Helmet>
         {this.state.renderData.ProjGUID ? (
-          <List renderHeader={() => "请选择项目"}>
-            {projectTree(this.state.renderData, {
-              addBuGUID,
-              addProjGUID,
-              delBuGUID,
-              delProjGUID
-            })}
-          </List>
+          <>
+            <List renderHeader={() => "请选择项目"}>
+              {projectTree(this.state.renderData, {
+                addBuGUID,
+                addProjGUID,
+                delBuGUID,
+                delProjGUID
+              })}
+              
+            </List>
+            <WhiteSpace />
+            <List.Item className={styles.logout} thumb={<Logout />} onClick={()=>this.onLogout()}>
+              退出
+            </List.Item>
+          </>
         ) : (
           <ActivityIndicator
             className="loading"
@@ -106,4 +126,4 @@ export default connect(null, {
   addProjGUID,
   delBuGUID,
   delProjGUID
-})(Self);
+})(withRouter(Self));

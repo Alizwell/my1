@@ -9,6 +9,10 @@
   :global {
     .am-list-line {
       padding-right: 0;
+      .am-list-content {
+        padding-top: 0;
+        padding-bottom: 0;
+      }
     }
   }
 }
@@ -22,6 +26,12 @@
       margin-left: 0;
     }
 
+    .am-checkbox-wrapper {
+      & > .am-checkbox {
+        height: 152px !important;
+      }
+    }
+
     .am-checkbox {
       width: 40px;
     }
@@ -31,8 +41,16 @@
     }
     .listItemContent {
       width: 100%;
-      padding-left: 40px;
+      padding-left: 0;
       padding-right: 1rem;
+
+      & > .am-flexbox:first-child {
+        .am-flexbox-item {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
     }
 
     .rightText {

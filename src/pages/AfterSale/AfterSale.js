@@ -14,6 +14,15 @@ import FollowUp from "../../components/FollowUp";
 import styles from "./AfterSale.module.scss";
 import { delWithProps } from "../../utils/array";
 import SelectSearch from "../../components/SelectSearch";
+import { getLoanBank } from "../../service/afterSale.service";
+import { loanBankFormat, loanBankFilter } from "../../adaptor/loanBank.adaptor";
+import {
+  getMortgageServiceProcess,
+  getCommonFoundtServiceProcess,
+  getContractServiceProcess
+} from "../../service/process.service";
+
+import { serviceProcessFormat } from "../../adaptor/process.adaptor";
 
 const tabs = [{ title: "未办理" }, { title: "受理中" }, { title: "已放款" }];
 
@@ -45,7 +54,9 @@ class AfterSale extends React.Component {
         tabs2: []
       },
       dataSource: dataSource,
-      params: {}
+      params: {},
+      loanBank: [],
+      serviceProcess: []
     };
   }
 
@@ -53,7 +64,38 @@ class AfterSale extends React.Component {
     this.loadTabs0WithLoading();
     this.loadTabs1WithLoading();
     this.loadTabs2WithLoading();
+
+    getLoanBank({}).then(data => {
+      this.setState({
+        loanBank: loanBankFilter(data.data.HttpContent).map(loanBankFormat)
+      });
+    });
+
+    switch (this.props.serviceType) {
+      case "mortgage": {
+        return this.setProcessState(getMortgageServiceProcess);
+      }
+      case "commonFound": {
+        return this.setProcessState(getCommonFoundtServiceProcess);
+      }
+      case "contract": {
+        return this.setProcessState(getContractServiceProcess);
+      }
+      default:
+        return;
+    }
   }
+
+  setProcessState = fn => {
+    fn({}).then(data => {
+      this.setState({
+        serviceProcess:
+          data.data.HttpContent && data.data.HttpContent.length > 0
+            ? data.data.HttpContent.map(serviceProcessFormat)
+            : []
+      });
+    });
+  };
 
   setDataSource = data => {
     this.setState({
@@ -154,7 +196,28 @@ class AfterSale extends React.Component {
         pageIndex: prevState.pageIndex + 1
       }),
       () => {
-        this.loadDataTabs2();
+        this.props
+          .loadTabs2({
+            pageIndex: this.state.pageIndex,
+            pageSize: this.state.pageSize
+          })
+          .then(data => {
+            if (data.data.StatusCode === 200) {
+              this.setState(
+                prev => ({
+                  handled: prev.handled.concat(
+                    data.data.HttpContent.data.map(handledMortgageFormat)
+                  ),
+                  tabs2hasMore:
+                    data.data.HttpContent.totalCount >
+                    data.data.HttpContent.pageSize
+                }),
+                () => {
+                  this.setDataSource(this.state.handled);
+                }
+              );
+            }
+          });
         this.setState({
           isListLoading: false
         });
@@ -219,7 +282,10 @@ class AfterSale extends React.Component {
 
     const showFollowup = () => {
       return this.state.followUp["tabs" + this.state.tabIndex].length > 0 ? (
-        <FollowUp />
+        <FollowUp
+          loanBankData={this.state.loanBank}
+          serviceProcess={this.state.serviceProcess}
+        />
       ) : null;
     };
 

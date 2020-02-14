@@ -17,7 +17,7 @@ export const getProcess = ({
 };
 
 export const getServiceProcess = ({ projGUID, serviceProcess, dataFilter }) => {
-  return api.get("", {
+  return api.get("/api/MortgageLoan/ServiceProcessQuery", {
     params: {
       projGUID,
       serviceProcess,

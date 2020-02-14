@@ -5,6 +5,8 @@ import moment from "moment";
 import styles from "./PayTraceListItem.module.scss";
 
 const AgreeItem = Checkbox.AgreeItem;
+const CheckboxItem = Checkbox.CheckboxItem;
+
 const Item = List.Item;
 const timeFormat = time => moment(time).format("YYYY-MM-DD");
 const PayTraceListItem = props => {
@@ -34,16 +36,16 @@ const PayTraceListItem = props => {
     }
   };
   let history = useHistory();
+
   const handleItemClk = e => {
     history.push({ pathname: "/detail", state: { saleServiceGUID: null } });
-    console.log("handleItemClk:", e);
   };
 
   return (
     <div>
       <Item className={styles.item}>
-        <AgreeItem className={styles.agreeItem} onChange={onChange}>
-          <div className={"listItemContent"} onClick={handleItemClk}>
+        <CheckboxItem className={styles.agreeItem} multipleLine onChange={onChange}>
+          <div className={"listItemContent"}>
             <Flex justify="between">
               <Flex.Item>
                 <b>{buildingNo}</b>
@@ -80,7 +82,7 @@ const PayTraceListItem = props => {
               </Flex.Item>
             </Flex>
           </div>
-        </AgreeItem>
+        </CheckboxItem>
       </Item>
     </div>
   );

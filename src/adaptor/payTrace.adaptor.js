@@ -39,5 +39,15 @@ export const notMortgagePayTraceFormat = original => {
 };
 
 export const mortgagePayTraceFormat = original => {
-  return notMortgagePayTraceFormat(original)
+  return notMortgagePayTraceFormat(original);
 };
+
+export const unSignedReasonFormat = original => {
+  return {
+    ...original,
+    value: original.ArrearageReasonParamGUID,
+    label: original.ArrearageReasonParamName
+  };
+};
+
+export const unPaidReasonFormat = unSignedReasonFormat;

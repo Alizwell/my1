@@ -20,7 +20,7 @@ const CommonFound = () => {
       <Helmet>
         <title>公积金贷款服务</title>
       </Helmet>
-      <AfterSale {...loadData} canGetProcess={true} />
+      <AfterSale {...loadData} canGetProcess={true} serviceType={'commonFound'}  />
     </>
   );
 };

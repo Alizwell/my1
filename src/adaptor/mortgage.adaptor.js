@@ -81,7 +81,7 @@ export const handledMortgageFormat = original => {
     // roomNum: original.对接人员,
     contractSum: original.合同总价,
     // roomNum: original.置业顾问,
-    // roomNum: original.SaleServiceGUID,
+    SaleServiceGUID: original.SaleServiceGUID,
     // roomNum: original.服务进程,
     // roomNum: original.二级分类,
     // roomNum: original.按揭进程,

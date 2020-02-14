@@ -8,10 +8,10 @@ export const payTraceMortgageService = ({
   tradeGUID,
   feeGUID,
   reason,
-  dataFilter,
-}) =>{ 
-  return api.get('/api/Payment/MortgageQuery', {
-    params:{
+  dataFilter
+}) => {
+  return api.get("/api/Payment/MortgageQuery", {
+    params: {
       bUGUID,
       projGUID,
       moneyType,
@@ -19,10 +19,10 @@ export const payTraceMortgageService = ({
       tradeGUID,
       feeGUID,
       reason,
-      dataFilter,
+      dataFilter
     }
   });
-}
+};
 
 export const unSignedPayTrace = ({
   bUGUID,
@@ -32,7 +32,7 @@ export const unSignedPayTrace = ({
   tradeGUID,
   orderGUID,
   reason,
-  dataFilter,
+  dataFilter
 }) => {
   return api.get("/api/Payment/NoSignedQuery", {
     params: {
@@ -49,11 +49,27 @@ export const unSignedPayTrace = ({
 };
 
 //非按揭类
-export const notMortgagePayTrace = (params)=>{
-  return payTraceMortgageService({...params, moneyType: '非贷款类房款'})
-}
+export const notMortgagePayTrace = params => {
+  return payTraceMortgageService({ ...params, moneyType: "非贷款类房款" });
+};
 
 //按揭类
-export const mortgagePayTrace =  (params)=>{
-  return payTraceMortgageService({...params, moneyType: '贷款类房款'})
-}
+export const mortgagePayTrace = params => {
+  return payTraceMortgageService({ ...params, moneyType: "贷款类房款" });
+};
+
+export const unsignReason = ({ dataFilter }) => {
+  return api.get("/api/Payment/WQYQuery", {
+    params: {
+      dataFilter
+    }
+  });
+};
+
+export const unpaidReason = ({ dataFilter }) => {
+  return api.get("/api/Payment/WHKQuery", {
+    params: {
+      dataFilter
+    }
+  });
+};

@@ -16,7 +16,8 @@ import {
 
 import {
   notMortgagePayTraceFormat,
-  mortgagePayTraceFormat
+  mortgagePayTraceFormat,
+  unSignedReasonFormat
 } from "../../adaptor/payTrace.adaptor";
 import { Helmet } from "react-helmet";
 import { delWithProps } from "../../utils/array";
@@ -24,6 +25,7 @@ import FollowUp from "../../components/FollowUp";
 import styles from "./PayTrace.module.scss";
 import SelectSearch from "../../components/SelectSearch";
 import NoData from "../../components/NoData";
+import { unsignReason, unpaidReason } from "../../service/payTrace.service";
 
 const tabs = [{ title: "未签约" }, { title: "非按揭" }, { title: "按揭" }];
 
@@ -51,7 +53,9 @@ class PayTrace extends React.Component {
         tabs1: [],
         tabs2: []
       },
-      params: {}
+      params: {},
+      unSignReasonData: [],
+      unPaidReasonData: []
     };
   }
 
@@ -59,6 +63,18 @@ class PayTrace extends React.Component {
     this.loadTabs0WithLoading();
     this.loadTabs1WithLoading();
     this.loadTabs2WithLoading();
+
+    unsignReason({}).then(data => {
+      this.setState({
+        unSignReasonData: data.data.HttpContent.map(unSignedReasonFormat)
+      });
+    });
+
+    unpaidReason({}).then(data => {
+      this.setState({
+        unPaidReasonData: data.data.HttpContent.map(unSignedReasonFormat)
+      });
+    });
   }
 
   loadWithLoading = async (loadFun, loadingName, params = {}) => {
@@ -177,8 +193,16 @@ class PayTrace extends React.Component {
 
   render() {
     const showFollowup = () => {
+      const payTraceData =
+        this.state.tabIndex === 0
+          ? this.state.unSignReasonData
+          : this.state.unPaidReasonData;
       return this.state.followUp["tabs" + this.state.tabIndex].length > 0 ? (
-        <FollowUp />
+        <FollowUp
+          category={"payTrace"}
+          payTraceType={this.state.tabIndex}
+          payTraceData={payTraceData}
+        />
       ) : null;
     };
     return (

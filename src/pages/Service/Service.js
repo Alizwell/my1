@@ -2,6 +2,11 @@ import React from "react";
 import { List } from "antd-mobile";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import { ReactComponent as Contract } from "../../assets/imgs/icon-contract.svg";
+import { ReactComponent as Mortgage } from "../../assets/imgs/icon-mortgage.svg";
+import { ReactComponent as CommonFound } from "../../assets/imgs/icon-commonFound.svg";
+import styles from "./Service.module.scss";
+
 const Item = List.Item;
 
 class Service extends React.Component {
@@ -16,13 +21,13 @@ class Service extends React.Component {
           <title>售后服务</title>
         </Helmet>
         <List>
-          <Item thumb="https://zos.alipayobjects.com/rmsportal/dNuvNrtqUztHCwM.png">
+          <Item className={styles.thumb} thumb={<Contract />}>
             <Link to="/home/service/contract">合同登记服务</Link>
           </Item>
-          <Item thumb="https://zos.alipayobjects.com/rmsportal/UmbJMbWOejVOpxe.png">
+          <Item className={styles.thumb} thumb={<Mortgage />}>
             <Link to="/home/service/mortgage">按揭贷款服务</Link>
           </Item>
-          <Item thumb="https://zos.alipayobjects.com/rmsportal/UmbJMbWOejVOpxe.png">
+          <Item className={styles.thumb} thumb={<CommonFound />}>
             <Link to="/home/service/commonFound">公积金贷款服务</Link>
           </Item>
         </List>

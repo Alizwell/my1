@@ -9,6 +9,7 @@ import styles from "./login.module.scss";
 import { cookies } from "brownies";
 import { updateAuth } from "../../redux/action/user";
 import { setTokenInfoToCookie, setUserInfoToCookie } from "../../utils/cookie";
+import { ReactComponent as House } from "../../assets/imgs/icon-house.svg";
 
 const Login = ({ setToken, setUserInfo, updateAuth }) => {
   let history = useHistory();
@@ -36,7 +37,7 @@ const Login = ({ setToken, setUserInfo, updateAuth }) => {
     delete cookies.tokenInfo;
     setCanSubmit(false);
     Toast.loading(null, 0, null, true);
-    testLogin({ name: formData.userName, password: formData.passwd })
+    login({ name: formData.userName, password: formData.passwd })
       .then(async res => {
         if (res && res.data && res.data.StatusCode === 200) {
           if (res && res.data && res.data.HttpContent) {
@@ -71,7 +72,9 @@ const Login = ({ setToken, setUserInfo, updateAuth }) => {
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.icon}></div>
+      <div className={styles.icon}>
+        <House />
+      </div>
       <section className={styles.content}>
         <div className={styles.inputItem}>
           <label>用户名</label>

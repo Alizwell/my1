@@ -20,7 +20,7 @@ const Contract = () => {
       <Helmet>
         <title>合同登记服务</title>
       </Helmet>
-      <AfterSale {...loadData} />
+      <AfterSale {...loadData} serviceType={'contract'}/>
     </>
   );
 };

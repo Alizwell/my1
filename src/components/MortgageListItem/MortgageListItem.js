@@ -16,7 +16,7 @@ const MortgageListItem = props => {
     lastProcessingDate,
     overDueDays,
     isDataComplete,
-    saleServiceGUID,
+    SaleServiceGUID,
     data,
     followUpHandle,
     canGetProcess
@@ -34,8 +34,7 @@ const MortgageListItem = props => {
 
   let history = useHistory();
   const handleItemClk = (e)=>{
-    history.push({ pathname:'/detail',state:{saleServiceGUID}});
-    console.log('handleItemClk:', e);
+    history.push({ pathname:'/detail',state:{saleServiceGUID: SaleServiceGUID}});
   }
 
   return (
@@ -85,7 +84,7 @@ MortgageListItem.defaultProps = {
   lastProcessingDate: "test",
   overDueDays: 0,
   isDataComplete: true,
-  saleServiceGUID: ''
+  SaleServiceGUID: ''
 };
 
 export default MortgageListItem;

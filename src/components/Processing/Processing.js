@@ -70,7 +70,7 @@ const StepDesc = ({followPeople, process})=>{
 
 
 
-const Processing = ({saleServiceGUID})=>{
+const Processing = ({SaleServiceGUID})=>{
   const [showLoading, setShowLoading] = useState(true);
   const [processData, setProcessData ] = useState([])
   useEffect(()=>{
@@ -84,9 +84,9 @@ const Processing = ({saleServiceGUID})=>{
       })
     }
     fetchData({});
-    //fetchData({saleServiceGUID})
+    //fetchData({SaleServiceGUID})
     // setShowLoading(false);
-  }, [saleServiceGUID])
+  }, [SaleServiceGUID])
 
   return (
     <>

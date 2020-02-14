@@ -104,6 +104,29 @@ class Home extends React.Component {
             </Switch>
           </TabBar.Item>
           <TabBar.Item
+            icon={{
+              uri:
+                "https://zos.alipayobjects.com/rmsportal/asJMfBrNqpMMlVpeInPQ.svg"
+            }}
+            selectedIcon={{
+              uri:
+                "https://zos.alipayobjects.com/rmsportal/gjpzzcrPMkhfEqgbYvmN.svg"
+            }}
+            title="回款跟进"
+            key="PayTrace"
+            selected={this.state.selectedTab === "tab1"}
+            onPress={() => {
+              this.props.history.replace("/home/payTrace");
+              this.setState({
+                selectedTab: "tab1"
+              });
+            }}
+          >
+            <Switch>
+              <Route exact path="/home/payTrace" children={<PayTrace />} />
+            </Switch>
+          </TabBar.Item>
+          <TabBar.Item
             icon={
               <div
                 style={{
@@ -124,29 +147,6 @@ class Home extends React.Component {
                 }}
               />
             }
-            title="回款跟进"
-            key="PayTrace"
-            selected={this.state.selectedTab === "tab1"}
-            onPress={() => {
-              this.props.history.replace("/home/payTrace");
-              this.setState({
-                selectedTab: "tab1"
-              });
-            }}
-          >
-            <Switch>
-              <Route exact path="/home/payTrace" children={<PayTrace />} />
-            </Switch>
-          </TabBar.Item>
-          <TabBar.Item
-            icon={{
-              uri:
-                "https://zos.alipayobjects.com/rmsportal/asJMfBrNqpMMlVpeInPQ.svg"
-            }}
-            selectedIcon={{
-              uri:
-                "https://zos.alipayobjects.com/rmsportal/gjpzzcrPMkhfEqgbYvmN.svg"
-            }}
             title="我的"
             key="my"
             selected={this.state.selectedTab === "tab2"}
