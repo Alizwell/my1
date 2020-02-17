@@ -12,6 +12,7 @@ export const afterSaleService = ({
   pageIndex,
   pageSize,
   reclassify,
+  bankName,
   dataFilter
 }, url) =>{ 
   return api.get(url, {
@@ -27,6 +28,7 @@ export const afterSaleService = ({
       pageIndex,
       pageSize,
       reclassify,
+      bankName,
       dataFilter
     }
   });

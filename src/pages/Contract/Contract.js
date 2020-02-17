@@ -20,7 +20,21 @@ const Contract = () => {
       <Helmet>
         <title>合同登记服务</title>
       </Helmet>
-      <AfterSale {...loadData} serviceType={'contract'}/>
+      <AfterSale {...loadData} serviceType={'contract'} showTabs={["process"]} followUpBtns={
+        [{
+          attr: 'process',
+          value: '跟进进程',
+          content: {
+            title: '跟进进程',
+            list: [{
+              type: 'Picker',
+              category: 'process',
+              props: {},
+              label: '服务进程'
+            }]
+          }
+        }]
+      } />
     </>
   );
 };

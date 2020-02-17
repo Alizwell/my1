@@ -6,16 +6,16 @@ const Item = Popover.Item;
 
 const listData = [
   {
-    value: '客户',
+    value: '姓名',
     dataKey: 'customerName'
-  },
-  {
-    value: '电话',
-    dataKey: 'customerPhone'
   },
   {
     value: '房号',
     dataKey:  'roomNumberWord'
+  },
+  {
+    value: '银行',
+    dataKey: 'bankName'
   },
 ]
 
@@ -72,7 +72,7 @@ const SelectSearch = ({loadFunc, setParams, list})=>{
   return (
     <div className={styles.searchBarWrapper}>
       <SearchBar
-          placeholder="请输入客户姓名、电话(后四位或全号)或置业顾问姓名"
+          placeholder="请输入客户姓名、房号、贷款银行"
           // ref={ref => (this.autoFocusInst = ref)}
           onFocus={onFocus}
           onBlur={onBlur}

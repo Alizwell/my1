@@ -119,7 +119,7 @@ class PayTrace extends React.Component {
     return unSignedPayTrace({ ...params }).then(data => {
       if (data.data.StatusCode === 200) {
         this.setState({
-          notHandled: data.data.HttpContent
+          notHandled: data.data.HttpContent.DataResult
         });
       }
     });
@@ -129,9 +129,10 @@ class PayTrace extends React.Component {
     return notMortgagePayTrace({ ...params }).then(data => {
       if (data.data.StatusCode === 200) {
         this.setState({
-          handling: data.data.HttpContent[0]
-            ? data.data.HttpContent[0].List.map(notMortgagePayTraceFormat)
-            : []
+          // handling: data.data.HttpContent[0]
+          //   ? data.data.HttpContent[0].List.map(notMortgagePayTraceFormat)
+          //   : []
+          handling: data.data.HttpContent.DataResult
         });
       }
     });
@@ -141,9 +142,10 @@ class PayTrace extends React.Component {
     return mortgagePayTrace({ ...params }).then(data => {
       if (data.data.StatusCode === 200) {
         this.setState({
-          handled: data.data.HttpContent[0]
-            ? data.data.HttpContent[0].List.map(mortgagePayTraceFormat)
-            : []
+          // handled: data.data.HttpContent[0]
+          //   ? data.data.HttpContent[0].List.map(mortgagePayTraceFormat)
+          //   : []
+          handled: data.data.HttpContent.DataResult
         });
       }
     });
@@ -199,8 +201,8 @@ class PayTrace extends React.Component {
           : this.state.unPaidReasonData;
       return this.state.followUp["tabs" + this.state.tabIndex].length > 0 ? (
         <FollowUp
-          category={"payTrace"}
-          payTraceType={this.state.tabIndex}
+          payTraceType={this.state.tabIndex === 0 ? 0 : 1}
+          btns={this.props.followUpBtns}
           payTraceData={payTraceData}
         />
       ) : null;
@@ -272,7 +274,11 @@ class PayTrace extends React.Component {
                       overflow: "auto"
                     }}
                   >
-                    {this.state.handling.map((item, index) => {
+                    <PayTraceList
+                      followUpHandle={this.tabs1FollowUp}
+                      data={this.state.handling}
+                    />
+                    {/* {this.state.handling.map((item, index) => {
                       const props = {
                         ...item,
                         endDate: item.lastDate,
@@ -281,7 +287,7 @@ class PayTrace extends React.Component {
                         data: item
                       };
                       return <PayTraceListItem key={index} {...props} />;
-                    })}
+                    })} */}
                   </PullToRefresh>
                 ) : (
                   <NoData onRefresh={this.loaTabs1WithRefresh} />
@@ -308,7 +314,11 @@ class PayTrace extends React.Component {
                       overflow: "auto"
                     }}
                   >
-                    {this.state.handled.map((item, index) => {
+                    <PayTraceList
+                      followUpHandle={this.tabs2FollowUp}
+                      data={this.state.handled}
+                    />
+                    {/* {this.state.handled.map((item, index) => {
                       const props = {
                         ...item,
                         endDate: item.lastDate,
@@ -317,7 +327,7 @@ class PayTrace extends React.Component {
                         data: item
                       };
                       return <PayTraceListItem key={index} {...props} />;
-                    })}
+                    })} */}
                   </PullToRefresh>
                 ) : (
                   <NoData onRefresh={this.loaTabs2WithRefresh} />
@@ -331,5 +341,39 @@ class PayTrace extends React.Component {
     );
   }
 }
+PayTrace.defaultProps = {
+  followUpBtns: 
+    [
+      {
+        attr: 'unSign',
+        value: '跟进',
+        content: {
+          title: '跟进',
+          list: [
+            {
+              type: 'Picker',
+              category: 'mortgage',
+              props: {},
+              label: ['未签约原因', '欠款原因'],
+            },
+            {
+              type: 'DatePicker',
+              category: 'mortgage',
+              attr: 'closeTime',
+              props: {},
+              label: '闭合时间'
+            },
+            {
+              type: 'TextareaItem',
+              category: 'mortgage',
+              props: {},
+              label: '备注'
+            }
+          ]
+        }
+      }
+    ]
+}
+
 
 export default PayTrace;

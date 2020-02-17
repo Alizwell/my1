@@ -7,7 +7,7 @@ import styles from "./AccordionList.module.scss";
 const HeaderContent = ({ header, extraText }) => {
   return (
     <Flex justify="between">
-      <Flex.Item>{header}</Flex.Item>
+      <Flex.Item><b>{header}</b></Flex.Item>
       <Flex.Item className={styles.headerText}>{extraText}</Flex.Item>
     </Flex>
   );
@@ -23,7 +23,7 @@ const AccordionList = props => {
             <Accordion.Panel
               header={HeaderContent({
                 header: data.MortgageLoanProcess,
-                extraText: data.TotalMoney + "万"
+                extraText: (Number(data.TotalMoney) / 10000).toFixed(0) + " 万"
               })}
               key={index}
             >

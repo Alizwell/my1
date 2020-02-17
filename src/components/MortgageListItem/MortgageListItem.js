@@ -43,7 +43,7 @@ const MortgageListItem = props => {
           <div className={'listItemContent'} onClick={handleItemClk}>
             <Flex justify="between">
               <Flex.Item>
-                <b>{buildingNo}</b>
+                <span>{buildingNo}</span>
               </Flex.Item>
               <Flex.Item className={"rightText"}>
                 <span>资料是否齐全：{isDataComplete}</span>
@@ -52,7 +52,7 @@ const MortgageListItem = props => {
             <WhiteSpace />
             <Flex justify="between">
               <Flex.Item>
-                <b>{`${customName} ${customPhone}`}</b>
+                <span>{customName}</span>
               </Flex.Item>
               <Flex.Item className={"rightText"}>
                 <span style={{ color: "red" }}>逾期天数: {overDueDays}</span>

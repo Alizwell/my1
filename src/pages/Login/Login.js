@@ -37,7 +37,7 @@ const Login = ({ setToken, setUserInfo, updateAuth }) => {
     delete cookies.tokenInfo;
     setCanSubmit(false);
     Toast.loading(null, 0, null, true);
-    login({ name: formData.userName, password: formData.passwd })
+    testLogin({ name: formData.userName, password: formData.passwd })
       .then(async res => {
         if (res && res.data && res.data.StatusCode === 200) {
           if (res && res.data && res.data.HttpContent) {
@@ -82,7 +82,7 @@ const Login = ({ setToken, setUserInfo, updateAuth }) => {
             type="text"
             name="userName"
             onChange={e => changeFormdata(e)}
-            placeholder={"请输入手机号码"}
+            placeholder={"请输入ERP账号"}
           />
         </div>
         <div className={styles.inputItem}>
@@ -98,9 +98,9 @@ const Login = ({ setToken, setUserInfo, updateAuth }) => {
           登录
         </Button>
       </section>
-      <footer className={styles.footer}>
+      {/* <footer className={styles.footer}>
         <span>融信集团 Powered by 明源云客</span>
-      </footer>
+      </footer> */}
     </div>
   );
 };

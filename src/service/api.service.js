@@ -3,8 +3,10 @@ import { getTokenFromStore } from "../redux/selectors/user.selector";
 import { getProjectInfo } from "../redux/selectors/project.selector";
 import qs from "qs";
 
-const baseURL = "http://39.98.108.23/webapi/";
+// const baseURL = "http://39.98.108.23/webapi/";
+// const baseURL = "http://39.98.108.23/webapi_20200217/";
 // const baseURL = "http://localhost:3000/webapi/";
+const baseURL = "http://192.168.1.5:3000/webapi_20200217/";
 // const baseURL = "http://192.168.1.5:3000/webapi/";
 // application/x-www-form-urlencoded; charset=utf-8;
 // application/json; charset=utf-8;
@@ -53,7 +55,7 @@ api.interceptors.response.use(
   err => {
     console.error(err.response);
     // const history = useHistory();
-    if (err.response.status === 401) {
+    if (err.response && err.response.status === 401) {
       // history.push('/login');
       const href = window.location.href.split("#")[0] + "#/login";
       window.location.replace(href);

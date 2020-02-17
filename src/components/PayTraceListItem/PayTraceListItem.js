@@ -48,10 +48,10 @@ const PayTraceListItem = props => {
           <div className={"listItemContent"}>
             <Flex justify="between">
               <Flex.Item>
-                <b>{buildingNo}</b>
+                <span>{buildingNo}</span>
               </Flex.Item>
               <Flex.Item className={"rightText"}>
-                <span>未回款: {unpaidMoney}万</span>
+                <span>未回款: {(Number(unpaidMoney) / 10000).toFixed(0) + " 万"}</span>
               </Flex.Item>
             </Flex>
             <WhiteSpace />

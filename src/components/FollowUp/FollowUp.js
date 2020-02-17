@@ -10,21 +10,12 @@ import {
 } from "antd-mobile";
 import styles from "./Follow.module.scss";
 
-const FollowUp = ({
-  loanBankData,
-  serviceProcess,
-  payTraceData,
-  payTraceType,
-  category
-}) => {
-  const appRoot = document.getElementById("root");
-
+const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBankData, serviceProcess, payTraceData})=>{
   const [modalState, setModalState] = useState({
     isVisible: false,
     loanBank: "",
     processDate: "",
     process: "",
-    bankData: loanBankData,
     modalType: "bank"
   });
 
@@ -39,136 +30,160 @@ const FollowUp = ({
     }));
   };
 
-  const showToast = ({ type }) => {
-    setPartialModalState({
-      isVisible: true,
-      modalType: type
-    });
+  const generateItem = (item)=>{
+    switch (item.type) {
+      case 'Picker': {
+        const config = {
+          "bank": loanBankData,
+          "process": serviceProcess,
+          "mortgage": payTraceData,
+          "default": pickerData
+        }
+
+        const data = config[item.category] ? config[item.category] : pickerData;
+        const lable = item.category !== 'mortgage' 
+                ? item.label 
+                : item.label[payTraceType];
+
+        return (
+        <Picker
+          data={data}
+          cols={1}
+          value={modalState[item.attr]}
+          onChange={v => onSelectChange(item.attr, v)}
+          onOk={v => onSelectChange(item.attr, v)}
+        >
+          <List.Item arrow="horizontal">
+            {lable}
+          </List.Item>
+        </Picker>);
+      }
+      case 'DatePicker': {
+        return (<DatePicker
+          mode="date"
+          title="请选择日期"
+          extra="请选择"
+          value={modalState[item.attr]}
+          onChange={v => onSelectChange(item.attr, v)}
+        >
+          <List.Item arrow="horizontal">办理日期</List.Item>
+        </DatePicker>)
+      }
+      case 'TextareaItem': {
+        return (<TextareaItem title={item.label} rows={2} />)
+      }
+      default: 
+        return <></>;
+    }
+  }
+
+  return (
+    <Modal
+      className={styles.followUpModal}
+      transparent
+      visible={true}
+      maskClosable={true}
+      title={modalContent.title}
+      footer={[
+        {
+          text: "取消",
+          onPress: () => onClose()
+        },
+        {
+          text: "提交",
+          onPress: () => onClose()
+        }
+      ]}
+    >
+      <List>
+        {
+          modalContent.list.map((item, idx)=>{
+            return (
+              generateItem(item)
+            )
+          })
+        }
+      </List>
+    </Modal>
+  )
+}
+
+FollowUpModal.defaultProps = {
+  modalContent: {
+    title: '跟进',
+    list: [{
+      type: 'DatePicker',
+      props: {},
+      attr: '',
+      label: ''
+    }]
+  },
+  onClose: ()=>{},
+  pickerData: [],
+  loanBankData: [],
+  serviceProcess: []
+}
+
+
+
+const BottomBtn = ({
+  btns,
+  loanBankData,
+  serviceProcess,
+  payTraceType,
+  payTraceData
+})=>{
+  const [modalContent, setModalContent] = useState([])
+  const [showModal, setShowModal] = useState(false);
+  const appRoot = document.getElementById("root");
+  const width = (100 / btns.length) + '%';
+
+  const showToast = (item) => {
+    setShowModal(true);
+    setModalContent(item.content)
   };
 
-  const modalContent = () => {
-    return (
-      <Modal
-        className={styles.followUpModal}
-        visible={modalState.isVisible}
-        transparent
-        maskClosable={true}
-        title="跟进"
-        footer={[
-          {
-            text: "取消",
-            onPress: () => setPartialModalState({ isVisible: false })
-          },
-          {
-            text: "提交",
-            onPress: () => setPartialModalState({ isVisible: false })
-          }
-        ]}
-        // wrapProps={{ onTouchStart: this.onWrapTouchStart }}
-        // afterClose={() => { alert('afterClose'); }}
-      >
-        <List>
-          {category === "service" ? (
-            <>
-              {modalState.modalType === "bank" ? (
-                <Picker
-                  data={modalState.bankData}
-                  cols={1}
-                  value={modalState.loanBank}
-                  onChange={v => onSelectChange("loanBank", v)}
-                  onOk={v => onSelectChange("loanBank", v)}
-                >
-                  <List.Item arrow="horizontal">按揭银行</List.Item>
-                </Picker>
-              ) : (
-                <Picker
-                  data={serviceProcess}
-                  cols={1}
-                  value={modalState.process}
-                  onChange={v => onSelectChange("process", v)}
-                  onOk={v => onSelectChange("process", v)}
-                >
-                  <List.Item arrow="horizontal">服务进程</List.Item>
-                </Picker>
-              )}
-              <DatePicker
-                mode="date"
-                title="请选择日期"
-                extra="请选择"
-                value={modalState.processDate}
-                onChange={date => onSelectChange("processDate", date)}
-              >
-                <List.Item arrow="horizontal">办理日期</List.Item>
-              </DatePicker>
-            </>
-          ) : (
-            <>
-              <Picker
-                data={payTraceData}
-                cols={1}
-                value={modalState.payTraceItem}
-                onChange={v => onSelectChange("payTraceItem", v)}
-                onOk={v => onSelectChange("payTraceItem", v)}
-              >
-                <List.Item arrow="horizontal">
-                  {payTraceType === 0 ? "未签约原因" : "欠款原因"}
-                </List.Item>
-              </Picker>
-              <DatePicker
-                mode="date"
-                title="请选择日期"
-                extra="请选择"
-                value={modalState.payTraceDate}
-                onChange={date => onSelectChange("payTraceDate", date)}
-              >
-                <List.Item arrow="horizontal">闭合时间</List.Item>
-              </DatePicker>
-              <TextareaItem title="备注:" rows={2} />
-            </>
-          )}
-        </List>
-      </Modal>
-    );
-  };
+  const onClose = ()=>{
+    setShowModal(false)
+  }
+
   const content = (
     <div className={styles.fllowUp}>
-      {category === "payTrace" ? (
-        <Button
-          type="primary"
-          inline
-          style={{ width: "100%" }}
-          onClick={() => showToast({ type: "payTrace" })}
-        >
-          跟进
-        </Button>
-      ) : (
-        <>
-          <Button
-            type="primary"
-            inline
-            style={{ width: "50%" }}
-            onClick={() => showToast({ type: "bank" })}
-          >
-            跟进银行
-          </Button>
-          <Button
-            type="primary"
-            inline
-            style={{ width: "50%" }}
-            onClick={() => showToast({ type: "process" })}
-          >
-            跟进进程
-          </Button>
-        </>
-      )}
-      {modalContent()}
+      {
+        btns.map((item, idx)=>{
+          return (
+              <Button
+                type="primary"
+                inline
+                style={{ width }}
+                onClick={() => showToast(item)}
+              >{item.value}</Button>
+            )
+          }
+        )
+      }
+      {showModal && <FollowUpModal 
+          onClose={onClose} 
+          loanBankData={loanBankData}
+          serviceProcess={serviceProcess}   
+          modalContent={modalContent }
+          payTraceType={payTraceType}
+          payTraceData={payTraceData}
+        />
+      }
     </div>
   );
   return ReactDOM.createPortal(content, appRoot);
-};
+}
 
-FollowUp.defaultProps = {
-  category: "service"
-};
+BottomBtn.defaultProps = {
+  btns: [
+    {
+      attr: 'bank',
+      value: '跟进银行',
+      modal: {}
+    }
+  ]
+}
 
-export default FollowUp;
+export default BottomBtn;

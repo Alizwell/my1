@@ -7,7 +7,7 @@ import styles from "./PayTraceList.module.scss";
 const HeaderContent = ({ header, extraText }) => {
   return (
     <Flex justify="between">
-      <Flex.Item>{header}</Flex.Item>
+      <Flex.Item><b>{header}</b></Flex.Item>
       <Flex.Item className={styles.headerText}>{extraText}</Flex.Item>
     </Flex>
   );
@@ -24,8 +24,8 @@ const PayTraceList = props => {
               header={HeaderContent({
                 header: data.ArrearageReasonName
                   ? data.ArrearageReasonName
-                  : "test",
-                extraText: data.TotalMoney + "万"
+                  : "",
+                extraText: (Number(data.TotalMoney) / 10000).toFixed(0) + " 万"
               })}
               key={idx}
             >

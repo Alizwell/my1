@@ -23,9 +23,7 @@ import {
 } from "../../service/process.service";
 
 import { serviceProcessFormat } from "../../adaptor/process.adaptor";
-
-const tabs = [{ title: "未办理" }, { title: "受理中" }, { title: "已放款" }];
-
+import { moneyDivider1000 } from '../../utils/utils';
 class AfterSale extends React.Component {
   constructor(props) {
     super(props);
@@ -56,7 +54,10 @@ class AfterSale extends React.Component {
       dataSource: dataSource,
       params: {},
       loanBank: [],
-      serviceProcess: []
+      serviceProcess: [],
+      tabsTotal0: 0,
+      tabsTotal1: 0,
+      tabsTotal2: 0
     };
   }
 
@@ -145,7 +146,8 @@ class AfterSale extends React.Component {
     return this.props.loadTabs0({ ...params }).then(data => {
       if (data.data.StatusCode === 200) {
         this.setState({
-          notHandled: data.data.HttpContent.map(handledMortgageFormat)
+          notHandled: data.data.HttpContent.DataResult.map(handledMortgageFormat),
+          tabsTotal0: data.data.HttpContent.TotalMoney
         });
       }
     });
@@ -155,7 +157,8 @@ class AfterSale extends React.Component {
     return this.props.loadTabs1({ ...params }).then(data => {
       if (data.data.StatusCode === 200) {
         this.setState({
-          handling: data.data.HttpContent
+          handling: data.data.HttpContent.DataResult,
+          tabsTotal1: data.data.HttpContent.TotalMoney
         });
       }
     });
@@ -171,10 +174,11 @@ class AfterSale extends React.Component {
         if (data.data.StatusCode === 200) {
           this.setState(
             {
-              handled: data.data.HttpContent.data.map(handledMortgageFormat),
+              handled: data.data.HttpContent.DataResult.data.map(handledMortgageFormat),
+              tabsTotal2: data.data.HttpContent.TotalMoney,
               tabs2hasMore:
-                data.data.HttpContent.totalCount >
-                data.data.HttpContent.pageSize
+                data.data.HttpContent.DataResult.totalCount >
+                data.data.HttpContent.DataResult.pageSize
             },
             () => {
               this.setDataSource(this.state.handled);
@@ -285,19 +289,22 @@ class AfterSale extends React.Component {
         <FollowUp
           loanBankData={this.state.loanBank}
           serviceProcess={this.state.serviceProcess}
-        />
+          btns={this.props.followUpBtns}
+         />
       ) : null;
     };
 
-    const renderHeader = () => {
-      if (this.state.handled.length === 0) {
-        return (
-          <div className={styles.nodataWrapper}>
-            <NoData />
-          </div>
-        );
-      }
-    };
+    const tabs = [
+      { title: "未办理", total: this.state.tabsTotal0 }, 
+      { title: "受理中" , total: this.state.tabsTotal1 }, 
+      { title: "已放款" , total: this.state.tabsTotal2 }
+    ];
+
+    const renderTab = (tab)=>{
+      return (
+        <div className={styles.tabItem}>{tab.title + moneyDivider1000(tab.total)}</div>
+      )
+    }
 
     return (
       <div className={styles.wrapper}>
@@ -312,6 +319,7 @@ class AfterSale extends React.Component {
           animated={false}
           swipeable={false}
           useOnPan={false}
+          renderTab={renderTab}
         >
           <div className={styles.listWrapper}>
             {this.state.tabs0Loading ? (
@@ -396,7 +404,6 @@ class AfterSale extends React.Component {
               <ListView
                 dataSource={this.state.dataSource}
                 initialListSize={30}
-                // renderHeader={renderHeader}
                 renderFooter={() => (
                   <div style={{ padding: 30, textAlign: "center" }}>
                     {this.state.isListLoading ? "Loading..." : "Loading..."}
@@ -430,7 +437,36 @@ class AfterSale extends React.Component {
 }
 
 AfterSale.defaultProps = {
-  canGetProcess: false
+  canGetProcess: false,
+  followUpBtns: 
+    [
+      {
+        attr: 'bank',
+        value: '跟进银行',
+        content: {
+          title: '跟进银行',
+          list: [{
+            type: 'Picker',
+            category: 'bank',
+            props: {},
+            label: '按揭银行'
+          }]
+        }
+      },
+      {
+        attr: 'process',
+        value: '跟进进程',
+        content: {
+          title: '跟进进程',
+          list: [{
+            type: 'Picker',
+            category: 'process',
+            props: {},
+            label: '服务进程'
+          }]
+        }
+      }
+    ]
 };
 
 export default AfterSale;
