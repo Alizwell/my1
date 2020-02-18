@@ -1,8 +1,11 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
+import { connect } from 'react-redux';
 import { Flex, Checkbox, List, WhiteSpace } from "antd-mobile";
 import styles from "./MortgageListItem.module.scss";
 import moment from 'moment';
+import cx from 'classnames';
+import { setDetail } from '../../redux/action/detail';
 
 const momentFormat = time => moment(time).format('YYYY-MM-DD HH:mm')
 const AgreeItem = Checkbox.AgreeItem;
@@ -19,7 +22,9 @@ const MortgageListItem = props => {
     SaleServiceGUID,
     data,
     followUpHandle,
-    canGetProcess
+    noCheck,
+    canGetProcess,
+    setDetail
   } = props;
 
   const onChange = (e)=>{
@@ -34,12 +39,20 @@ const MortgageListItem = props => {
 
   let history = useHistory();
   const handleItemClk = (e)=>{
-    history.push({ pathname:'/detail',state:{saleServiceGUID: SaleServiceGUID}});
+    history.push(
+      { 
+        pathname:'/detail',
+        state:{
+          saleServiceGUID: SaleServiceGUID
+        }
+      }
+    );
+    setDetail({...props})
   }
 
   return (
       <Item className={styles.item}>
-        <AgreeItem className={styles.agreeItem} onChange={onChange}>
+        <AgreeItem className={cx(styles.agreeItem, {[styles.hideCheckBox]: noCheck})} onChange={onChange}>
           <div className={'listItemContent'} onClick={handleItemClk}>
             <Flex justify="between">
               <Flex.Item>
@@ -87,4 +100,4 @@ MortgageListItem.defaultProps = {
   SaleServiceGUID: ''
 };
 
-export default MortgageListItem;
+export default connect(null, { setDetail })(MortgageListItem);

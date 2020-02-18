@@ -2,19 +2,20 @@ import React from "react";
 import { Accordion, Flex } from "antd-mobile";
 import MortgageListItem from "../MortgageListItem";
 import { unhandledMortgageFormat } from "../../adaptor/mortgage.adaptor";
+import cx from 'classnames';
 import styles from "./AccordionList.module.scss";
 
 const HeaderContent = ({ header, extraText }) => {
   return (
     <Flex justify="between">
       <Flex.Item><b>{header}</b></Flex.Item>
-      <Flex.Item className={styles.headerText}>{extraText}</Flex.Item>
+      <Flex.Item className={cx(styles.headerText, 'money')}>{extraText} </Flex.Item>
     </Flex>
   );
 };
 
 const AccordionList = props => {
-  const { data: handlingData, followUpHandle } = props;
+  const { data: handlingData, followUpHandle, noCheck } = props;
   return (
     <div>
       <Accordion>
@@ -23,7 +24,7 @@ const AccordionList = props => {
             <Accordion.Panel
               header={HeaderContent({
                 header: data.MortgageLoanProcess,
-                extraText: (Number(data.TotalMoney) / 10000).toFixed(0) + " 万"
+                extraText: (Number(data.TotalMoney) / 10000).toFixed(0) + " 万 "
               })}
               key={index}
             >
@@ -34,7 +35,8 @@ const AccordionList = props => {
                   overDueDays: item.mortgageOverdueDays,
                   isDataComplete: item.isNoInformationReceived,
                   followUpHandle: followUpHandle,
-                  data: item
+                  data: item,
+                  noCheck
                 };
                 return <MortgageListItem key={idx} {...props} />;
               })}
@@ -47,7 +49,8 @@ const AccordionList = props => {
 };
 
 AccordionList.defaultProps = {
-  data: []
+  data: [],
+  noCheck: false
 };
 
 export default AccordionList;

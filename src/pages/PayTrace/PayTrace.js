@@ -219,7 +219,7 @@ class PayTrace extends React.Component {
       return (
         <div className={styles.tabItem}>
           <p>{tab.title}</p>
-          <p>({moneyDivider1000(tab.total)}) 万</p>
+          <p className='money'>({moneyDivider1000(tab.total)}) 万</p>
         </div>
       )
     }
@@ -231,7 +231,7 @@ class PayTrace extends React.Component {
         <SelectSearch
           setParams={this.setParams}
           loadFunc={this["loadTabs" + this.state.tabIndex + "WithLoading"]}
-          list={[1]}
+          list={[0, 1]}
         />
         <Tabs
           tabs={tabs}

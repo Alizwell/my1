@@ -45,3 +45,15 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+
+.hideCheckBox{
+  :global{
+    .am-checkbox{
+      display: none;
+    }
+    .listItemContent{
+      padding-left: 15px;
+    }
+  }
+}

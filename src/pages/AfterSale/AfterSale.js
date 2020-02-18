@@ -210,11 +210,11 @@ class AfterSale extends React.Component {
               this.setState(
                 prev => ({
                   handled: prev.handled.concat(
-                    data.data.HttpContent.data.map(handledMortgageFormat)
+                    data.data.HttpContent.DataResult.data.map(handledMortgageFormat)
                   ),
                   tabs2hasMore:
-                    data.data.HttpContent.totalCount >
-                    data.data.HttpContent.pageSize
+                    data.data.HttpContent.DataResult.totalCount >
+                    data.data.HttpContent.DataResult.pageSize
                 }),
                 () => {
                   this.setDataSource(this.state.handled);
@@ -279,7 +279,8 @@ class AfterSale extends React.Component {
         overDueDays: item.mortgageOverdueDays,
         isDataComplete: item.isNoInformationReceived,
         followUpHandle: this.tabs2FollowUp,
-        data: item
+        data: item,
+        noCheck: true
       };
       return <MortgageListItem key={rowID} {...props} />;
     };
@@ -304,7 +305,7 @@ class AfterSale extends React.Component {
       return (
         <div className={styles.tabItem}>
           <p>{tab.title}</p>
-          <p>({moneyDivider1000(tab.total)}) 万</p>
+          <p className='money'>({moneyDivider1000(tab.total)}) 万</p>
         </div>
       )
     }
@@ -312,6 +313,7 @@ class AfterSale extends React.Component {
     return (
       <div className={styles.wrapper}>
         <SelectSearch
+          list={this.props.searchList}
           setParams={this.setParams}
           loadFunc={this["loadTabs" + this.state.tabIndex + "WithLoading"]}
         />
@@ -441,6 +443,7 @@ class AfterSale extends React.Component {
 
 AfterSale.defaultProps = {
   canGetProcess: false,
+  searchList: [0, 1, 2],
   followUpBtns: 
     [
       {

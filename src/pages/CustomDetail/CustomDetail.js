@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from 'react-redux';
 import { withRouter } from "react-router";
 import { Flex, Tabs } from "antd-mobile";
 import { CustomInfo } from "../../components/CustomInfo";
@@ -14,9 +15,8 @@ const CustomDetail = ({
   customName,
   customPhone,
   overDueDays,
-  location
+  saleServiceGUID
 }) => {
-  const { saleServiceGUID } = location.state;
   return (
     <div className={styles.detail}>
       <Flex justify="start" className={styles.wrapper}>
@@ -53,4 +53,12 @@ CustomDetail.defaultProps = {
   saleServiceGUID: ""
 };
 
-export default withRouter(CustomDetail);
+const mapStateToProps = (state)=>({
+  buildingNo: state.detail.buildingNo,
+  customName: state.detail.customName,
+  customPhone: state.detail.customPhone,
+  overDueDays: state.detail.overDueDays,
+  saleServiceGUID: state.detail.SaleServiceGUID
+})
+
+export default withRouter(connect(mapStateToProps)(CustomDetail));

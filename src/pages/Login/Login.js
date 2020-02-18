@@ -37,7 +37,7 @@ const Login = ({ setToken, setUserInfo, updateAuth }) => {
     delete cookies.tokenInfo;
     setCanSubmit(false);
     Toast.loading(null, 0, null, true);
-    login({ name: formData.userName, password: formData.passwd })
+    testLogin({ name: formData.userName, password: formData.passwd })
       .then(async res => {
         if (res && res.data && res.data.StatusCode === 200) {
           if (res && res.data && res.data.HttpContent) {

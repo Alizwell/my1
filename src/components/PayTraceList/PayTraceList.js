@@ -3,12 +3,13 @@ import { Accordion, Flex } from "antd-mobile";
 import { PayTraceListItem } from "../PayTraceListItem";
 import { unSignedPayTraceFormat } from "../../adaptor/payTrace.adaptor";
 import styles from "./PayTraceList.module.scss";
+import cx from 'classnames';
 
 const HeaderContent = ({ header, extraText }) => {
   return (
     <Flex justify="between">
       <Flex.Item><b>{header}</b></Flex.Item>
-      <Flex.Item className={styles.headerText}>{extraText}</Flex.Item>
+      <Flex.Item className={cx(styles.headerText, 'money')}>{extraText}</Flex.Item>
     </Flex>
   );
 };

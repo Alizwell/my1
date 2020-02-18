@@ -69,10 +69,15 @@ const SelectSearch = ({loadFunc, setParams, list})=>{
     })
   }
 
+  const placeholder = ()=>{
+    const config = ["客户姓名","房号","贷款银行"];
+    return '请输入' + list.map(val=>config[val]).join('、');
+  }
+
   return (
     <div className={styles.searchBarWrapper}>
       <SearchBar
-          placeholder="请输入客户姓名、房号、贷款银行"
+          placeholder={placeholder()}
           // ref={ref => (this.autoFocusInst = ref)}
           onFocus={onFocus}
           onBlur={onBlur}
@@ -102,7 +107,7 @@ const SelectSearch = ({loadFunc, setParams, list})=>{
 }
 
 SelectSearch.defaultProps = {
-  list: [0,1,2]
+  list: [0, 1, 2]
 }
 
 export default SelectSearch;
