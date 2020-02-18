@@ -5,7 +5,15 @@
     .am-list-view-scrollview-content {
       position: relative !important;
     }
+    .am-tabs-default-bar-tab{
+      padding: 0;
+      height: 3rem;
+    }
   }
+}
+
+.tabs{
+  background-color: red;
 }
 
 .list {
@@ -96,6 +104,11 @@
 
 
 .tabItem{
-  height: 60px;
-  
+  height: 100%;
+  & > p {
+    height: 50%;
+    line-height: 1.5rem;
+    // line-height: 30px;
+    text-align: center;
+  }
 }

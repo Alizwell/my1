@@ -30,7 +30,7 @@ const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBan
     }));
   };
 
-  const generateItem = (item)=>{
+  const generateItem = (item, idx)=>{
     switch (item.type) {
       case 'Picker': {
         const config = {
@@ -47,6 +47,7 @@ const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBan
 
         return (
         <Picker
+          key={idx}
           data={data}
           cols={1}
           value={modalState[item.attr]}
@@ -60,6 +61,7 @@ const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBan
       }
       case 'DatePicker': {
         return (<DatePicker
+          key={idx}
           mode="date"
           title="请选择日期"
           extra="请选择"
@@ -70,7 +72,7 @@ const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBan
         </DatePicker>)
       }
       case 'TextareaItem': {
-        return (<TextareaItem title={item.label} rows={2} />)
+        return (<TextareaItem key={idx} title={item.label} rows={2} />)
       }
       default: 
         return <></>;
@@ -99,7 +101,7 @@ const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBan
         {
           modalContent.list.map((item, idx)=>{
             return (
-              generateItem(item)
+              generateItem(item, idx)
             )
           })
         }
@@ -153,6 +155,7 @@ const BottomBtn = ({
         btns.map((item, idx)=>{
           return (
               <Button
+                key={idx}
                 type="primary"
                 inline
                 style={{ width }}

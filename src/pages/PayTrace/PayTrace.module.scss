@@ -1,6 +1,12 @@
 .wrapper {
   width: 100%;
   height: calc(100% - 44px);
+  :global{
+    .am-tabs-default-bar-tab{
+      padding: 0;
+      height: 3rem;
+    }
+  }
 }
 
 .list {
@@ -17,6 +23,9 @@
     .am-list-body {
       height: 100%;
     }
+    .listItemContent{
+      font-size: 15px;
+    }
   }
 }
 
@@ -25,4 +34,16 @@
   height: 100%;
   align-items: flex-start;
   justify-content: center;
+}
+
+
+
+.tabItem{
+  height: 100%;
+  & > p {
+    height: 50%;
+    line-height: 1.5rem;
+    // line-height: 30px;
+    text-align: center;
+  }
 }

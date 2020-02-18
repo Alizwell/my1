@@ -302,7 +302,10 @@ class AfterSale extends React.Component {
 
     const renderTab = (tab)=>{
       return (
-        <div className={styles.tabItem}>{tab.title + moneyDivider1000(tab.total)}</div>
+        <div className={styles.tabItem}>
+          <p>{tab.title}</p>
+          <p>({moneyDivider1000(tab.total)}) 万</p>
+        </div>
       )
     }
 

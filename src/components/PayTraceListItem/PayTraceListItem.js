@@ -93,7 +93,8 @@ PayTraceListItem.defaultProps = {
   customName: "test",
   paymentMethod: "测试",
   overdueDays: 0,
-  estimatedSigningTime: "2019-12-31"
+  estimatedSigningTime: "",
+  endDate: ''
 };
 
 export default PayTraceListItem;

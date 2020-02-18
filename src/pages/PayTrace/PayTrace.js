@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  SearchBar,
   Tabs,
   List,
   ActivityIndicator,
@@ -15,8 +14,6 @@ import {
 } from "../../service/payTrace.service";
 
 import {
-  notMortgagePayTraceFormat,
-  mortgagePayTraceFormat,
   unSignedReasonFormat
 } from "../../adaptor/payTrace.adaptor";
 import { Helmet } from "react-helmet";
@@ -26,8 +23,7 @@ import styles from "./PayTrace.module.scss";
 import SelectSearch from "../../components/SelectSearch";
 import NoData from "../../components/NoData";
 import { unsignReason, unpaidReason } from "../../service/payTrace.service";
-
-const tabs = [{ title: "未签约" }, { title: "非按揭" }, { title: "按揭" }];
+import { moneyDivider1000 } from '../../utils/utils';
 
 class PayTrace extends React.Component {
   constructor(props) {
@@ -55,7 +51,10 @@ class PayTrace extends React.Component {
       },
       params: {},
       unSignReasonData: [],
-      unPaidReasonData: []
+      unPaidReasonData: [],
+      tabsTotal0: 0,
+      tabsTotal1: 0,
+      tabsTotal2: 0
     };
   }
 
@@ -119,7 +118,8 @@ class PayTrace extends React.Component {
     return unSignedPayTrace({ ...params }).then(data => {
       if (data.data.StatusCode === 200) {
         this.setState({
-          notHandled: data.data.HttpContent.DataResult
+          notHandled: data.data.HttpContent.DataResult,
+          tabsTotal0: data.data.HttpContent.TotalMoney
         });
       }
     });
@@ -132,7 +132,8 @@ class PayTrace extends React.Component {
           // handling: data.data.HttpContent[0]
           //   ? data.data.HttpContent[0].List.map(notMortgagePayTraceFormat)
           //   : []
-          handling: data.data.HttpContent.DataResult
+          handling: data.data.HttpContent.DataResult,
+          tabsTotal1: data.data.HttpContent.TotalMoney
         });
       }
     });
@@ -145,7 +146,8 @@ class PayTrace extends React.Component {
           // handled: data.data.HttpContent[0]
           //   ? data.data.HttpContent[0].List.map(mortgagePayTraceFormat)
           //   : []
-          handled: data.data.HttpContent.DataResult
+          handled: data.data.HttpContent.DataResult,
+          tabsTotal2: data.data.HttpContent.TotalMoney
         });
       }
     });
@@ -207,6 +209,20 @@ class PayTrace extends React.Component {
         />
       ) : null;
     };
+
+    const tabs = [
+      { title: "未签约", total: this.state.tabsTotal0 }, 
+      { title: "非按揭" , total: this.state.tabsTotal1 }, 
+      { title: "按揭" , total: this.state.tabsTotal2 }
+    ];
+    const renderTab = (tab)=>{
+      return (
+        <div className={styles.tabItem}>
+          <p>{tab.title}</p>
+          <p>({moneyDivider1000(tab.total)}) 万</p>
+        </div>
+      )
+    }
     return (
       <div className={styles.wrapper}>
         <Helmet>
@@ -215,7 +231,7 @@ class PayTrace extends React.Component {
         <SelectSearch
           setParams={this.setParams}
           loadFunc={this["loadTabs" + this.state.tabIndex + "WithLoading"]}
-          list={[2]}
+          list={[1]}
         />
         <Tabs
           tabs={tabs}
@@ -224,6 +240,7 @@ class PayTrace extends React.Component {
           swipeable={false}
           useOnPan={false}
           onChange={(tab, index) => this.setState({ tabIndex: index })}
+          renderTab={renderTab}
         >
           <div className={styles.listWrapper}>
             {this.state.tabs0Loading ? (
