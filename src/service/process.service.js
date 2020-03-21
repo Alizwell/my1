@@ -55,3 +55,46 @@ export const getOccupationServiceProcess = params =>
     ...params,
     serviceProcess: "入伙服务"
   });
+
+//handle the process
+export const setHandledProcess = ({
+  saleServiceGUIDs,
+  serviceproc,
+  jbr,
+  procmemo
+})=> api.get('/api/HandledProcess/DoHandledProcess', {
+  params: {
+    saleServiceGUIDs,
+    serviceproc,
+    jbr,
+    procmemo
+  }
+})
+
+//delete the process detail
+export const delProcessDetail = ({
+  saleServiceProcGUIDs,
+  saleServiceGUID
+}) => api.get('/api/HandledProcess/DeleteHandledProcessDetail', {
+  params: {
+    saleServiceProcGUIDs,
+    saleServiceGUID
+  }
+})
+
+//handle the process reason
+export const setProjectReason = ({
+  itemGuidList,
+  reason,
+  remark,
+  bhdate,
+  hkdate
+})=> api.get('/api/HandledProcess/DoHandledProcessReason', {
+  params: {
+    itemGuidList,
+    reason,
+    remark,
+    bhdate,
+    hkdate
+  }
+})

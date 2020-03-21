@@ -14,6 +14,7 @@ import styles from "./Self.module.scss";
 import { ReactComponent as Logout } from '../../assets/imgs/icon-logout.svg';
 import { logoutCookie } from '../../utils/cookie'; 
 import { withRouter } from 'react-router';
+import { getProjectInfo } from "../../redux/selectors/project.selector";
 
 const alert = Modal.alert;
 const CheckboxItem = Checkbox.CheckboxItem;
@@ -65,14 +66,15 @@ const projectTree = (renderData, actions) => {
 
 class Self extends React.Component {
   state = {
-    renderData: {
-      children: []
-    }
+    isLoading: true,
+    renderData: null
   };
   componentDidMount() {
-    getProject({}).then(data => {
+    const { buGUID: bUGUID } = getProjectInfo();
+    getProject({bUGUID: bUGUID.join(","), projGUID: null}).then(data => {
       this.setState({
-        renderData: data.data.HttpContent[0]
+        isLoading: false,
+        renderData: data.data.HttpContent.length > 0 ? data.data.HttpContent[0] : null
       });
     });
   }
@@ -94,16 +96,19 @@ class Self extends React.Component {
         <Helmet>
           <title>我的</title>
         </Helmet>
-        {this.state.renderData.ProjGUID ? (
+        { !this.state.isLoading ? (
           <>
             <List renderHeader={() => "请选择项目"}>
-              {projectTree(this.state.renderData, {
-                addBuGUID,
-                addProjGUID,
-                delBuGUID,
-                delProjGUID
-              })}
-              
+              {
+                this.state.renderData ? 
+                projectTree(this.state.renderData, {
+                  addBuGUID,
+                  addProjGUID,
+                  delBuGUID,
+                  delProjGUID
+                }) 
+                : <List.Item>无</List.Item>
+              }
             </List>
             <WhiteSpace />
             <List.Item className={styles.logout} thumb={<Logout />} onClick={()=>this.onLogout()}>

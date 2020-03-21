@@ -35,15 +35,15 @@ export const afterSaleService = ({
 }
 
 export const unHandledAfterSale = (params) => {
-  return afterSaleService({...params} ,"/api/MortgageLoan/NotHandledQuery")
+  return afterSaleService({...params, reclassify: '未办理'} ,"/api/MortgageLoan/NotHandledQuery")
 };
 
 export const handlingAfterSale = (params) => {
-  return afterSaleService({...params} ,"/api/MortgageLoan/DoingHandledQuery")
+  return afterSaleService({...params, reclassify: '受理中'} ,"/api/MortgageLoan/DoingHandledQuery")
 };
 
 export const handledAfterSale = (params) => {
-  return afterSaleService({...params} ,"/api/MortgageLoan/LoanHandledQuery")
+  return afterSaleService({...params, reclassify: '已放款'} ,"/api/MortgageLoan/LoanHandledQuery")
 };
 
 // mortgageLoan service

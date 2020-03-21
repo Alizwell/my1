@@ -195,17 +195,40 @@ class PayTrace extends React.Component {
     });
   };
 
+  resetFollowUp = ()=>{
+    this.setState( prev => ({
+      followUp: {
+        ...prev.followUp,
+        ['tabs' + prev.tabIndex]: []
+      }
+    }), ()=>{
+      this.loaTabs0WithRefresh();
+    })
+  }
+
   render() {
     const showFollowup = () => {
       const payTraceData =
         this.state.tabIndex === 0
           ? this.state.unSignReasonData
           : this.state.unPaidReasonData;
+      
+      const saleServiceGUIDs = ()=>{
+        const collection = this.state.followUp['tabs'+ this.state.tabIndex];
+        const config = {
+          0: 'orderGUID',
+          1: 'FeeGUID',
+          2: 'FeeGUID'
+        }
+        return collection.map(item => item[config[this.state.tabIndex]])
+      };
       return this.state.followUp["tabs" + this.state.tabIndex].length > 0 ? (
         <FollowUp
           payTraceType={this.state.tabIndex === 0 ? 0 : 1}
           btns={this.props.followUpBtns}
           payTraceData={payTraceData}
+          saleServiceGUIDs={saleServiceGUIDs()}
+          resetFollowUp={this.resetFollowUp}
         />
       ) : null;
     };
@@ -381,8 +404,16 @@ PayTrace.defaultProps = {
               label: '闭合时间'
             },
             {
+              type: 'DatePicker',
+              category: 'mortgage',
+              attr: 'payTraceTime',
+              props: {},
+              label: '预计回款日期'
+            },
+            {
               type: 'TextareaItem',
               category: 'mortgage',
+              attr: 'remark',
               props: {},
               label: '备注'
             }

@@ -15,6 +15,7 @@ import styles from "./AfterSale.module.scss";
 import { delWithProps } from "../../utils/array";
 import SelectSearch from "../../components/SelectSearch";
 import { getLoanBank } from "../../service/afterSale.service";
+import { getBuGUIDFromStore } from "../../redux/selectors/project.selector";
 import { loanBankFormat, loanBankFilter } from "../../adaptor/loanBank.adaptor";
 import {
   getMortgageServiceProcess,
@@ -66,7 +67,8 @@ class AfterSale extends React.Component {
     this.loadTabs1WithLoading();
     this.loadTabs2WithLoading();
 
-    getLoanBank({}).then(data => {
+    const buGUID = getBuGUIDFromStore();
+    getLoanBank({bUGUID: buGUID.join(',')}).then(data => {
       this.setState({
         loanBank: loanBankFilter(data.data.HttpContent).map(loanBankFormat)
       });
@@ -229,7 +231,7 @@ class AfterSale extends React.Component {
     );
   };
 
-  tabsFolowUp = index => {
+  tabsFollowUp = index => {
     return (val, method) => {
       if (method === "push") {
         this.setState(prev => ({
@@ -254,15 +256,15 @@ class AfterSale extends React.Component {
   };
 
   tabs0FollowUp = (val, method) => {
-    return this.tabsFolowUp(0)(val, method);
+    return this.tabsFollowUp(0)(val, method);
   };
 
   tabs1FollowUp = (val, method) => {
-    return this.tabsFolowUp(1)(val, method);
+    return this.tabsFollowUp(1)(val, method);
   };
 
   tabs2FollowUp = (val, method) => {
-    return this.tabsFolowUp(2)(val, method);
+    return this.tabsFollowUp(2)(val, method);
   };
 
   setParams = params => {
@@ -270,6 +272,17 @@ class AfterSale extends React.Component {
       params
     });
   };
+
+  resetFollowUp = ()=>{
+    this.setState( prev => ({
+      followUp: {
+        ...prev.followUp,
+        ['tabs' + prev.tabIndex]: []
+      }
+    }), ()=>{
+      this.loaTabs0WithRefresh();
+    })
+  }
 
   render() {
     const { canGetProcess } = this.props;
@@ -291,7 +304,9 @@ class AfterSale extends React.Component {
           loanBankData={this.state.loanBank}
           serviceProcess={this.state.serviceProcess}
           btns={this.props.followUpBtns}
-         />
+          saleServiceGUIDs={this.state.followUp['tabs'+ this.state.tabIndex].map(val=> val.SaleServiceGUID)}
+          resetFollowUp={this.resetFollowUp}
+        />
       ) : null;
     };
 
@@ -355,7 +370,7 @@ class AfterSale extends React.Component {
                       };
                       return (
                         <MortgageListItem
-                          key={index}
+                          key={item.SaleServiceGUID}
                           {...props}
                           canGetProcess={canGetProcess}
                         />

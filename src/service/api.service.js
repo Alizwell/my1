@@ -1,6 +1,6 @@
 import axios from "axios";
 import { getTokenFromStore } from "../redux/selectors/user.selector";
-import { getProjectInfo } from "../redux/selectors/project.selector";
+import { getProjGUIDFromStore } from "../redux/selectors/project.selector";
 import qs from "qs";
 
 // const baseURL = "http://39.98.108.23/webapi/";
@@ -22,7 +22,7 @@ let api = axios.create({
 api.interceptors.request.use(
   config => {
     const userToken = getTokenFromStore();
-    let [bUGUID, projGUID] = getProjectInfo();
+    let projGUID = getProjGUIDFromStore();
     config.baseURL = baseURL;
     if (userToken) {
       config.headers.Authorization = `bearer ${userToken}`;
@@ -30,15 +30,13 @@ api.interceptors.request.use(
     if (config.method === "post") {
       config.data = qs.stringify(config.data);
     }
-    if (config.method === "get") {
-      //teset code
-      projGUID = [];
-      bUGUID = [];
-      //teset code
+    if (config.method === "get" && !config.url.includes('ProjectInfoQuery') ) {
+      // buGUID = [];
+      // projGUID = [];
       config.params = {
         ...config.params,
-        bUGUID: bUGUID.length > 0 ? bUGUID.join(",") : null,
-        projGUID: projGUID.length > 0 ? projGUID.join(",") : null
+        // bUGUID: buGUID.length > 0 ? buGUID.join(",") : null,
+        projGUID: projGUID.length > 0 ? projGUID.join(",") : ''
       };
     }
     return config;

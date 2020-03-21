@@ -13,7 +13,8 @@ export const unSignedPayTraceFormat = original => {
     arrearageReason: original.ArrearageReasonName,
     dataCreated: original.CreateOn,
     remark: original.Remark,
-    overdueDays: original.逾期天数
+    overdueDays: original.逾期天数,
+    FeeGUID: original.FeeGUID
   };
 };
 

@@ -1,4 +1,3 @@
-// getBUGUID, getProjGUID
 import store from "../index.js";
 import { cookies } from "brownies";
 
@@ -34,5 +33,5 @@ export const getProjectInfo = () => {
     getProjGUIDFromStore().length > 0
       ? getProjGUIDFromStore()
       : getProjGUIDFromCookie();
-  return [buGUID, projGUID];
+  return { buGUID, projGUID };
 };

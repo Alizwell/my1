@@ -7,9 +7,11 @@ export const getProject = ({
     dataFilter
 })=>{
     return api.get('/api/ProjectBase/ProjectInfoQuery', {
-        bUGUID,
-        projGUID,
-        levelCodes,
-        dataFilter
+        params: {
+            bUGUID,
+            projGUID,
+            levelCodes,
+            dataFilter
+        }
     })
 }

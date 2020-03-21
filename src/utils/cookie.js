@@ -14,6 +14,10 @@ export const setUserInfoToCookie = (userInfo) => {
   cookies.userInfo = userInfo;
 }
 
+export const getTokenInfoFromCookie = ()=>{
+  return cookies.tokenInfo;
+}
+
 const isTokenExpired = ()=>{
   // console.log(cookies.tokenInfo, 'cookies.tokenInfo');
   return ( cookies.tokenInfo && cookies.tokenInfo['.expires']

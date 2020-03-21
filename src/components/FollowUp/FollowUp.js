@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
+import { setHandledProcess, setProjectReason } from '../../service/process.service';
+import { getTokenInfoFromCookie } from '../../utils/cookie';
 import {
   Button,
   Modal,
@@ -10,16 +12,21 @@ import {
 } from "antd-mobile";
 import styles from "./Follow.module.scss";
 
-const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBankData, serviceProcess, payTraceData})=>{
+const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBankData, serviceProcess, payTraceData, saleServiceGUIDs, resetFollowUp})=>{
   const [modalState, setModalState] = useState({
     isVisible: false,
     loanBank: "",
     processDate: "",
     process: "",
-    modalType: "bank"
+    modalType: "bank",
+    category: ''
   });
 
   const onSelectChange = (key, val) => {
+    setPartialModalState({ [key]: val, category: key });
+  };
+
+  const onDateChange = (key, val) => {
     setPartialModalState({ [key]: val });
   };
 
@@ -50,9 +57,9 @@ const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBan
           key={idx}
           data={data}
           cols={1}
-          value={modalState[item.attr]}
-          onChange={v => onSelectChange(item.attr, v)}
-          onOk={v => onSelectChange(item.attr, v)}
+          value={modalState[item.category]}
+          onChange={v => onSelectChange(item.category, v)}
+          onOk={v => onSelectChange(item.category, v)}
         >
           <List.Item arrow="horizontal">
             {lable}
@@ -66,16 +73,48 @@ const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBan
           title="请选择日期"
           extra="请选择"
           value={modalState[item.attr]}
-          onChange={v => onSelectChange(item.attr, v)}
+          onChange={v => onDateChange(item.attr, v)}
         >
-          <List.Item arrow="horizontal">办理日期</List.Item>
+          <List.Item arrow="horizontal">{item.label}</List.Item>
         </DatePicker>)
       }
       case 'TextareaItem': {
-        return (<TextareaItem key={idx} title={item.label} rows={2} />)
+        return (<TextareaItem 
+                  key={idx}
+                  value={modalState[item.attr]}
+                  onChange={v => onDateChange(item.attr, v)} 
+                  title={item.label} 
+                  rows={2} 
+                />)
       }
       default: 
         return <></>;
+    }
+  }
+
+  const commitAfterSale = ()=>{
+    let targetItem = serviceProcess.find( v => Number(v.value) === Number(modalState.process) );
+    if(targetItem){
+      const tokenInfo = getTokenInfoFromCookie();
+      setHandledProcess({
+        saleServiceGUIDs: saleServiceGUIDs.join(';'),
+        serviceproc: targetItem && targetItem.ServiceProc,
+        jbr: tokenInfo.userName,
+        procmemo: ''
+      });
+    }
+  }
+
+  const commitPayTrace = ()=>{
+    let targetItem = payTraceData.find( v => String(v.value) === String(modalState[modalState.category]) );
+    if(targetItem){
+      setProjectReason({
+        itemGuidList: saleServiceGUIDs.join(';'),
+        reason: targetItem && targetItem.ArrearageReasonParamName,
+        remark: modalState.remark,
+        bhdate: modalState.closeTime,
+        hkdate: modalState.payTraceTime
+      })
     }
   }
 
@@ -93,7 +132,15 @@ const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBan
         },
         {
           text: "提交",
-          onPress: () => onClose()
+          onPress: () => {
+            if (modalState.category === 'process') {
+              commitAfterSale();
+            } else {
+              commitPayTrace();
+            }
+            onClose()
+            resetFollowUp && resetFollowUp();
+          }
         }
       ]}
     >
@@ -127,13 +174,14 @@ FollowUpModal.defaultProps = {
 }
 
 
-
 const BottomBtn = ({
   btns,
   loanBankData,
   serviceProcess,
   payTraceType,
-  payTraceData
+  payTraceData,
+  saleServiceGUIDs,
+  resetFollowUp
 })=>{
   const [modalContent, setModalContent] = useState([])
   const [showModal, setShowModal] = useState(false);
@@ -145,7 +193,7 @@ const BottomBtn = ({
     setModalContent(item.content)
   };
 
-  const onClose = ()=>{
+  const onCloseModal = ()=>{
     setShowModal(false)
   }
 
@@ -165,13 +213,15 @@ const BottomBtn = ({
           }
         )
       }
-      {showModal && <FollowUpModal 
-          onClose={onClose} 
+      {showModal && <FollowUpModal
+          onClose={onCloseModal} 
           loanBankData={loanBankData}
           serviceProcess={serviceProcess}   
           modalContent={modalContent }
           payTraceType={payTraceType}
           payTraceData={payTraceData}
+          saleServiceGUIDs={saleServiceGUIDs}
+          resetFollowUp={resetFollowUp}
         />
       }
     </div>

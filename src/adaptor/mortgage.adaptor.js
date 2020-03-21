@@ -1,5 +1,6 @@
 export const unhandledMortgageFormat = original => {
   return {
+    ...original,
     buguid: original.buguid,
     companyName: original.公司名称,
     projectName: original.项目名称,
@@ -25,7 +26,7 @@ export const unhandledMortgageFormat = original => {
     // roomNum: original.公积金金额,
     customPhone: original.电话号码,
     remark: original.备注,
-    isFirstBatchMaterial: original.是否首期材料,
+    isFirstBatchMaterial: original.是否收齐材料,
     isNoInformationReceived: original.未收到资料,
     mortgageOverdueDays: original.按揭逾期天数,
     commonFoundOverdueDay: original.公积金逾期天数
