@@ -24,7 +24,7 @@ const CustomDetail = ({
           <b className={styles.avator}>头像</b>
         </Flex.Item>
         <Flex.Item className={styles.headerDesc}>
-          <p>{buildingNo}</p>
+          <p className={"textEllipsis"}>{buildingNo}</p>
           <p>
             {customName} <b>{customPhone}</b>
           </p>

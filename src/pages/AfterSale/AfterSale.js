@@ -2,10 +2,12 @@ import React from "react";
 import {
   Tabs,
   List,
+  Toast,
   ActivityIndicator,
   PullToRefresh,
   ListView
 } from "antd-mobile";
+import { connect } from 'react-redux';
 import MortgageListItem from "../../components/MortgageListItem";
 import { handledMortgageFormat } from "../../adaptor/mortgage.adaptor";
 import { AccordionList } from "../../components/AccordionList";
@@ -63,6 +65,9 @@ class AfterSale extends React.Component {
   }
 
   componentDidMount() {
+    if (this.props.projectID.length === 0) {
+      Toast.fail('请选择项目!!!', 2);
+    }
     this.loadTabs0WithLoading();
     this.loadTabs1WithLoading();
     this.loadTabs2WithLoading();
@@ -70,7 +75,7 @@ class AfterSale extends React.Component {
     const buGUID = getBuGUIDFromStore();
     getLoanBank({bUGUID: buGUID.join(',')}).then(data => {
       this.setState({
-        loanBank: loanBankFilter(data.data.HttpContent).map(loanBankFormat)
+        loanBank: data.data.HttpContent ? loanBankFilter(data.data.HttpContent).map(loanBankFormat) : []
       });
     });
 
@@ -280,7 +285,8 @@ class AfterSale extends React.Component {
         ['tabs' + prev.tabIndex]: []
       }
     }), ()=>{
-      this.loaTabs0WithRefresh();
+      this.forceUpdate();
+      this['loaTabs'+ this.state.tabIndex +'WithRefresh']();
     })
   }
 
@@ -490,4 +496,8 @@ AfterSale.defaultProps = {
     ]
 };
 
-export default AfterSale;
+const mapStateToProps = (state)=>({
+  projectID: state.project.projGUID
+})
+
+export default connect(mapStateToProps)(AfterSale);

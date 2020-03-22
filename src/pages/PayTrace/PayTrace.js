@@ -2,9 +2,11 @@ import React from "react";
 import {
   Tabs,
   List,
+  Toast,
   ActivityIndicator,
   PullToRefresh
 } from "antd-mobile";
+import { connect } from 'react-redux';
 import { PayTraceList } from "../../components/PayTraceList";
 import { PayTraceListItem } from "../../components/PayTraceListItem";
 import {
@@ -41,9 +43,9 @@ class PayTrace extends React.Component {
       tab0Refreshing: false,
       tab1Refreshing: false,
       tab2Refreshing: false,
-      tabs0Loading: true,
-      tabs1Loading: true,
-      tabs2Loading: true,
+      tabs0Loading: false,
+      tabs1Loading: false,
+      tabs2Loading: false,
       followUp: {
         tabs0: [],
         tabs1: [],
@@ -59,6 +61,9 @@ class PayTrace extends React.Component {
   }
 
   componentDidMount() {
+    if (this.props.projectID.length === 0) {
+      Toast.fail('请选择项目!!!', 2);
+    }
     this.loadTabs0WithLoading();
     this.loadTabs1WithLoading();
     this.loadTabs2WithLoading();
@@ -129,9 +134,6 @@ class PayTrace extends React.Component {
     return notMortgagePayTrace({ ...params }).then(data => {
       if (data.data.StatusCode === 200) {
         this.setState({
-          // handling: data.data.HttpContent[0]
-          //   ? data.data.HttpContent[0].List.map(notMortgagePayTraceFormat)
-          //   : []
           handling: data.data.HttpContent.DataResult,
           tabsTotal1: data.data.HttpContent.TotalMoney
         });
@@ -143,9 +145,6 @@ class PayTrace extends React.Component {
     return mortgagePayTrace({ ...params }).then(data => {
       if (data.data.StatusCode === 200) {
         this.setState({
-          // handled: data.data.HttpContent[0]
-          //   ? data.data.HttpContent[0].List.map(mortgagePayTraceFormat)
-          //   : []
           handled: data.data.HttpContent.DataResult,
           tabsTotal2: data.data.HttpContent.TotalMoney
         });
@@ -195,14 +194,30 @@ class PayTrace extends React.Component {
     });
   };
 
+  resetHandleData = (index)=>{
+    const config = {
+      0: 'notHandled',
+      1: 'handling',
+      2: 'handled'
+    }
+    this.setState({
+      ['tabs'+index+'Loading']: true,
+      [config[index]]: []
+    })
+  }
+
   resetFollowUp = ()=>{
     this.setState( prev => ({
       followUp: {
         ...prev.followUp,
         ['tabs' + prev.tabIndex]: []
       }
-    }), ()=>{
-      this.loaTabs0WithRefresh();
+    }), async () =>{
+      this.resetHandleData(this.state.tabIndex);
+      await this['loaTabs'+ this.state.tabIndex +'WithRefresh']();
+      this.setState({
+        ['tabs'+this.state.tabIndex+'Loading']: false
+      })
     })
   }
 
@@ -423,5 +438,9 @@ PayTrace.defaultProps = {
     ]
 }
 
+const mapStateToProps = (state)=>({
+  projectID: state.project.projGUID
+})
 
-export default PayTrace;
+export default connect(mapStateToProps)(PayTrace);
+

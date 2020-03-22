@@ -1,6 +1,8 @@
 export const unSignedPayTraceFormat = original => {
   return {
     buguid: original.buguid,
+    customName: original.客户名称,
+    estimatedSigningTime: original.预计签约日期,
     companyName: original.BUName,
     projectName: original.ProjName,
     projGUID: original.ProjGUID,
@@ -8,7 +10,7 @@ export const unSignedPayTraceFormat = original => {
     paymentMethod: original.付款方式,
     tradeGUID: original.TradeGUID,
     orderGUID: original.OrderGUID,
-    endDate: original.EndDate,
+    endDate: original.闭合时间,
     money: original.RmbYe,
     arrearageReason: original.ArrearageReasonName,
     dataCreated: original.CreateOn,

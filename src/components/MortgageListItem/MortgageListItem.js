@@ -55,7 +55,7 @@ const MortgageListItem = props => {
         <AgreeItem className={cx(styles.agreeItem, {[styles.hideCheckBox]: noCheck})} onChange={onChange}>
           <div className={'listItemContent'} onClick={handleItemClk}>
             <Flex justify="between">
-              <Flex.Item>
+              <Flex.Item className={"textEllipsis"}>
                 <span>{buildingNo}</span>
               </Flex.Item>
               <Flex.Item className={"rightText"}>

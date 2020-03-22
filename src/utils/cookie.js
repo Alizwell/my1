@@ -4,6 +4,16 @@ import moment from 'moment';
 export const logoutCookie = ()=>{
   delete cookies.tokenInfo;
   delete cookies.userInfo;
+  delete cookies.projectInfo;
+}
+
+export const setProjectInfo = ({buGUID, projGUID})=>{
+  cookies.projectInfo = { buGUID, projGUID };
+}
+
+export const getProjectInfoFromCookie = ()=>{
+  const { buGUID = null, projGUID = null} = cookies.projectInfo ? cookies.projectInfo : {};
+  return { buGUID, projGUID };
 }
 
 export const setTokenInfoToCookie = (tokenInfo) => {

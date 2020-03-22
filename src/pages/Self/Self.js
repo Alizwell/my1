@@ -4,46 +4,45 @@ import { Accordion, List, Checkbox, ActivityIndicator, WhiteSpace, Modal } from 
 import { getProject } from "../../service/project.service";
 import { projectInfoFormat } from "../../adaptor/projectInfo.adaptor";
 import {
-  addBuGUID,
-  addProjGUID,
-  delBuGUID,
-  delProjGUID
+  setBuGUID,
+  setProjGUID
 } from "../../redux/action/project";
 import { Helmet } from "react-helmet";
 import styles from "./Self.module.scss";
 import { ReactComponent as Logout } from '../../assets/imgs/icon-logout.svg';
-import { logoutCookie } from '../../utils/cookie'; 
+import { logoutCookie, setProjectInfo } from '../../utils/cookie'; 
 import { withRouter } from 'react-router';
 import { getProjectInfo } from "../../redux/selectors/project.selector";
 
 const alert = Modal.alert;
 const CheckboxItem = Checkbox.CheckboxItem;
 
-const leafItem = (
+const LeafItem = (
   { projName, buguid, projGUID },
-  { addBuGUID, addProjGUID, delBuGUID, delProjGUID }
+  { setBuGUID, setProjGUID },
+  { selectedProject }
 ) => {
+
   function onCheckboxChange(e, buguid, projGUID) {
     const { checked } = e.target;
     if (checked) {
-      addBuGUID(buguid);
-      addProjGUID(projGUID);
-    } else {
-      delBuGUID(buguid);
-      delProjGUID(projGUID);
+      setBuGUID(buguid);
+      setProjGUID(projGUID);
+      setProjectInfo({buGUID: buguid, projGUID});
     }
   }
   return (
     <CheckboxItem
       key={projGUID}
       onChange={e => onCheckboxChange(e, buguid, projGUID)}
+      checked={projGUID === selectedProject}
     >
       {projName}
     </CheckboxItem>
   );
 };
 
-const projectTree = (renderData, actions) => {
+const ProjectTree = (renderData, actions, projectInfo) => {
   const formatData = projectInfoFormat(renderData);
   const subItem =
     formatData.children.length > 0 ? (
@@ -52,19 +51,23 @@ const projectTree = (renderData, actions) => {
           {formatData.children.map((item, index) => {
             return (
               <div className={styles.headerSpace} key={index}>
-                {projectTree(item, actions)}
+                {ProjectTree(item, actions, projectInfo)}
               </div>
             );
           })}
         </Accordion.Panel>
       </Accordion>
     ) : (
-      leafItem(formatData, actions)
+      LeafItem(formatData, actions, projectInfo)
     );
   return subItem;
 };
 
 class Self extends React.Component {
+  constructor(props){
+    super(props);
+    this.checkedRef = React.createRef();
+  }
   state = {
     isLoading: true,
     renderData: null
@@ -90,7 +93,7 @@ class Self extends React.Component {
   }
 
   render() {
-    const { addBuGUID, addProjGUID, delBuGUID, delProjGUID } = this.props;
+    const { setBuGUID, setProjGUID } = this.props;
     return (
       <div style={{ height: "100%" }}>
         <Helmet>
@@ -101,12 +104,10 @@ class Self extends React.Component {
             <List renderHeader={() => "请选择项目"}>
               {
                 this.state.renderData ? 
-                projectTree(this.state.renderData, {
-                  addBuGUID,
-                  addProjGUID,
-                  delBuGUID,
-                  delProjGUID
-                }) 
+                ProjectTree({...this.state.renderData}, {
+                  setBuGUID,
+                  setProjGUID
+                }, {selectedProject: this.props.selectedProject}) 
                 : <List.Item>无</List.Item>
               }
             </List>
@@ -126,9 +127,18 @@ class Self extends React.Component {
     );
   }
 }
-export default connect(null, {
-  addBuGUID,
-  addProjGUID,
-  delBuGUID,
-  delProjGUID
+
+const mapStateToProps = (state)=>({
+  selectedProject: state.project.projGUID[0]
+})
+
+
+Self.defaultProps = {
+  selectedProject: []
+}
+
+
+export default connect(mapStateToProps, {
+  setBuGUID,
+  setProjGUID
 })(withRouter(Self));

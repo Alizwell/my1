@@ -1,8 +1,9 @@
-import { ADD_BUGUID, ADD_PROJGUID, DEL_PROJGUID, DEL_BUGUID } from "../const/project";
-
+import { SET_BUGUID, SET_PROJGUID, ADD_BUGUID, ADD_PROJGUID, DEL_PROJGUID, DEL_BUGUID } from "../const/project";
+import { getProjectInfoFromCookie } from '../../utils/cookie';
+const { buGUID, projGUID  } = getProjectInfoFromCookie();
 const initialState = {
-  buGUID: [],
-  projGUID: []
+  buGUID: buGUID ? [buGUID] :[],
+  projGUID: projGUID ? [projGUID]: []
 };
 
 const addItemToArray = (arr, item)=>{
@@ -42,6 +43,18 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         buGUID: removeItemFromArray(state.buGUID, payload)
+      };
+    }
+    case SET_BUGUID: {
+      return {
+        ...state,
+        buGUID: [payload]
+      };
+    }
+    case SET_PROJGUID: {
+      return {
+        ...state,
+        projGUID: [payload]
       };
     }
     default:

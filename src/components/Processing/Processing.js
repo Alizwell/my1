@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Steps, Flex, Modal, ActivityIndicator } from 'antd-mobile';
 import { getProcess, delProcessDetail } from '../../service/process.service';
 import { processInfoFormat } from '../../adaptor/process.adaptor';

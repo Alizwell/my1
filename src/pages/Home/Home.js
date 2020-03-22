@@ -1,15 +1,16 @@
 import React from "react";
-import { TabBar } from "antd-mobile";
+import { TabBar, Toast } from "antd-mobile";
 import PayTrace from "../PayTrace";
 import Self from "../Self";
 import Service from "../Service";
 import { Switch, Route } from "react-router-dom";
 import { withRouter } from "react-router";
+import { connect } from 'react-redux';
 import CommonFound from "../CommonFound";
 import Mortgage from "../Mortgage";
 import Contract from "../Contract";
-
 import "./home.css";
+
 class Home extends React.Component {
   constructor(props) {
     super(props);
@@ -21,6 +22,9 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
+    if (this.props.projectID.length === 0) {
+      Toast.fail('请选择项目!!!', 2);
+    }
     let pathName = this.props.history.location.pathname;
     if (pathName === "/home") {
       this.setState({
@@ -166,5 +170,8 @@ class Home extends React.Component {
     );
   }
 }
+const mapStateToProps = (state)=>({
+  projectID: state.project.projGUID
+})
 
-export default withRouter(Home);
+export default withRouter(connect(mapStateToProps)(Home));
