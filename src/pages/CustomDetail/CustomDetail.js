@@ -25,13 +25,11 @@ const CustomDetail = ({
         </Flex.Item>
         <Flex.Item className={styles.headerDesc}>
           <p className={"textEllipsis"}>{buildingNo}</p>
-          <p>
-            {customName} <b>{customPhone}</b>
-          </p>
+          <p>{customName}</p>
         </Flex.Item>
-        <Flex.Item className={styles.headerTail}>
+        {/* <Flex.Item className={styles.headerTail}>
           <p>逾期{overDueDays}天</p>
-        </Flex.Item>
+        </Flex.Item> */}
       </Flex>
       <Tabs tabs={tabs} swipeable={false} className={styles.tabsContent}>
         {saleServiceGUID ? (
@@ -39,23 +37,23 @@ const CustomDetail = ({
         ) : (
           <NoData />
         )}
-        <CustomInfo />
+        <CustomInfo serviceType={''}/>
       </Tabs>
     </div>
   );
 };
 
 CustomDetail.defaultProps = {
-  buildingNo: "5栋803",
+  buildingNo: "5栋test",
   customName: "黄先生test",
-  customPhone: "1368***1254",
-  overDueDays: 4,
+  customPhone: "1368***test",
+  overDueDays: 0,
   saleServiceGUID: ""
 };
 
 const mapStateToProps = (state)=>({
-  buildingNo: state.detail.buildingNo,
-  customName: state.detail.customName,
+  buildingNo: state.detail.房号,
+  customName: state.detail.客户姓名,
   customPhone: state.detail.customPhone,
   overDueDays: state.detail.overDueDays,
   saleServiceGUID: state.detail.SaleServiceGUID

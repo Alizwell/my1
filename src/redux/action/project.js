@@ -1,4 +1,4 @@
-import { SET_BUGUID, SET_PROJGUID, ADD_BUGUID, ADD_PROJGUID, DEL_BUGUID, DEL_PROJGUID} from '../const/project';
+import { SET_BANK_DATA, SET_BUGUID, SET_PROJGUID, ADD_BUGUID, ADD_PROJGUID, DEL_BUGUID, DEL_PROJGUID} from '../const/project';
 
 export const setBuGUID = payload =>({
     type: SET_BUGUID,
@@ -28,5 +28,10 @@ export const delBuGUID = payload =>({
 
 export const  delProjGUID = payload =>({
     type: DEL_PROJGUID,
+    payload
+})
+
+export const setBankData = payload => ({
+    type: SET_BANK_DATA,
     payload
 })

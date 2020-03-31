@@ -1,9 +1,10 @@
-import { SET_BUGUID, SET_PROJGUID, ADD_BUGUID, ADD_PROJGUID, DEL_PROJGUID, DEL_BUGUID } from "../const/project";
+import { SET_BANK_DATA, SET_BUGUID, SET_PROJGUID, ADD_BUGUID, ADD_PROJGUID, DEL_PROJGUID, DEL_BUGUID } from "../const/project";
 import { getProjectInfoFromCookie } from '../../utils/cookie';
 const { buGUID, projGUID  } = getProjectInfoFromCookie();
 const initialState = {
   buGUID: buGUID ? [buGUID] :[],
-  projGUID: projGUID ? [projGUID]: []
+  projGUID: projGUID ? [projGUID]: [],
+  bankData: []
 };
 
 const addItemToArray = (arr, item)=>{
@@ -55,6 +56,12 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         projGUID: [payload]
+      };
+    }
+    case SET_BANK_DATA: {
+      return {
+        ...state,
+        bankData: payload
       };
     }
     default:

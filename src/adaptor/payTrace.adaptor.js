@@ -4,6 +4,7 @@ export const unSignedPayTraceFormat = original => {
     customName: original.客户名称,
     estimatedSigningTime: original.预计签约日期,
     companyName: original.BUName,
+    unpaidMoney: original.欠款金额,
     projectName: original.ProjName,
     projGUID: original.ProjGUID,
     buildingNo: original.房号,
@@ -13,10 +14,12 @@ export const unSignedPayTraceFormat = original => {
     endDate: original.闭合时间,
     money: original.RmbYe,
     arrearageReason: original.ArrearageReasonName,
-    dataCreated: original.CreateOn,
+    subscribeDate: original.认购日期,
     remark: original.Remark,
     overdueDays: original.逾期天数,
-    FeeGUID: original.FeeGUID
+    FeeGUID: original.FeeGUID,
+    expectPayDate: original.预计回款日期,
+    unPaidReason: original.未回款原因
   };
 };
 

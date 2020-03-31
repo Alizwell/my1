@@ -24,7 +24,12 @@ const Contract = () => {
         {...loadData}
         searchList={[0, 1]}
         serviceType={'contract'} 
-        showTabs={["process"]} 
+        showTabs={["process"]}
+        customTabs={[
+          { title: "未办理"}, 
+          { title: "受理中"}, 
+          { title: "已完成"}]
+        }
         followUpBtns={
           [{
             attr: 'process',

@@ -12,16 +12,19 @@ import styles from "./Self.module.scss";
 import { ReactComponent as Logout } from '../../assets/imgs/icon-logout.svg';
 import { logoutCookie, setProjectInfo } from '../../utils/cookie'; 
 import { withRouter } from 'react-router';
-import { getProjectInfo } from "../../redux/selectors/project.selector";
+import { getBuGUIDFromCookie } from "../../redux/selectors/project.selector";
+import { useHistory } from "react-router-dom";
 
 const alert = Modal.alert;
 const CheckboxItem = Checkbox.CheckboxItem;
 
 const LeafItem = (
-  { projName, buguid, projGUID },
-  { setBuGUID, setProjGUID },
-  { selectedProject }
+  { formatData, actions, projectInfo }
 ) => {
+  let { projName, buguid, projGUID } = formatData;
+  let { setBuGUID, setProjGUID } = actions;
+  let { selectedProject } = projectInfo;
+  let history = useHistory();
 
   function onCheckboxChange(e, buguid, projGUID) {
     const { checked } = e.target;
@@ -29,8 +32,14 @@ const LeafItem = (
       setBuGUID(buguid);
       setProjGUID(projGUID);
       setProjectInfo({buGUID: buguid, projGUID});
+      history.push(
+        { 
+          pathname:'/home/service',
+        }
+      );
     }
   }
+
   return (
     <CheckboxItem
       key={projGUID}
@@ -58,7 +67,12 @@ const ProjectTree = (renderData, actions, projectInfo) => {
         </Accordion.Panel>
       </Accordion>
     ) : (
-      LeafItem(formatData, actions, projectInfo)
+      <LeafItem  
+        formatData={formatData}
+        actions={actions}
+        projectInfo={projectInfo}
+      />
+      // LeafItem(formatData, actions, projectInfo)
     );
   return subItem;
 };
@@ -73,8 +87,8 @@ class Self extends React.Component {
     renderData: null
   };
   componentDidMount() {
-    const { buGUID: bUGUID } = getProjectInfo();
-    getProject({bUGUID: bUGUID.join(","), projGUID: null}).then(data => {
+    const bUGUID = getBuGUIDFromCookie();
+    getProject({bUGUID: bUGUID.join(",") , projGUID: null}).then(data => {
       this.setState({
         isLoading: false,
         renderData: data.data.HttpContent.length > 0 ? data.data.HttpContent[0] : null

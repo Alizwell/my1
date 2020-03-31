@@ -18,10 +18,11 @@ import { delWithProps } from "../../utils/array";
 import SelectSearch from "../../components/SelectSearch";
 import { getLoanBank } from "../../service/afterSale.service";
 import { getBuGUIDFromStore } from "../../redux/selectors/project.selector";
+import { setBankData } from '../../redux/action/project';
 import { loanBankFormat, loanBankFilter } from "../../adaptor/loanBank.adaptor";
 import {
   getMortgageServiceProcess,
-  getCommonFoundtServiceProcess,
+  getCommonFoundServiceProcess,
   getContractServiceProcess
 } from "../../service/process.service";
 
@@ -74,9 +75,11 @@ class AfterSale extends React.Component {
 
     const buGUID = getBuGUIDFromStore();
     getLoanBank({bUGUID: buGUID.join(',')}).then(data => {
+      const bankData = data.data.HttpContent ? loanBankFilter(data.data.HttpContent).map(loanBankFormat) : []
       this.setState({
-        loanBank: data.data.HttpContent ? loanBankFilter(data.data.HttpContent).map(loanBankFormat) : []
+        loanBank: bankData
       });
+      this.props.setBankData(bankData)
     });
 
     switch (this.props.serviceType) {
@@ -84,7 +87,7 @@ class AfterSale extends React.Component {
         return this.setProcessState(getMortgageServiceProcess);
       }
       case "commonFound": {
-        return this.setProcessState(getCommonFoundtServiceProcess);
+        return this.setProcessState(getCommonFoundServiceProcess);
       }
       case "contract": {
         return this.setProcessState(getContractServiceProcess);
@@ -265,6 +268,17 @@ class AfterSale extends React.Component {
   };
 
   tabs1FollowUp = (val, method) => {
+    if(this.state.followUp.tabs1.length > 0){
+      if( this.state.followUp.tabs1[0]['按揭进程'] !== val['按揭进程'] ){
+        this.setState(prev => ({
+          ...prev,
+          followUp: {
+            ...prev.followUp,
+            tabs1: []
+          }
+        }))
+      }
+    } 
     return this.tabsFollowUp(1)(val, method);
   };
 
@@ -278,20 +292,40 @@ class AfterSale extends React.Component {
     });
   };
 
+  resetHandleData = (index)=>{
+    const config = {
+      0: 'notHandled',
+      1: 'handling',
+      2: 'handled'
+    }
+    this.setState({
+      ['tabs'+index+'Loading']: true,
+      [config[index]]: []
+    })
+  }
+  showParentLoading = ()=>{
+    this.setState({
+      ['tabs'+this.state.tabIndex+'Loading']: true
+    })
+  }
+
   resetFollowUp = ()=>{
     this.setState( prev => ({
       followUp: {
         ...prev.followUp,
         ['tabs' + prev.tabIndex]: []
       }
-    }), ()=>{
-      this.forceUpdate();
-      this['loaTabs'+ this.state.tabIndex +'WithRefresh']();
+    }), async () =>{
+      this.resetHandleData(this.state.tabIndex);
+      await this['loaTabs'+ this.state.tabIndex +'WithRefresh']();
+      this.setState({
+        ['tabs'+this.state.tabIndex+'Loading']: false
+      })
     })
   }
 
   render() {
-    const { canGetProcess } = this.props;
+    const { canGetProcess, hideOverdue, customTabs } = this.props;
     const row = (item, sectionID, rowID) => {
       const props = {
         ...item,
@@ -301,17 +335,22 @@ class AfterSale extends React.Component {
         data: item,
         noCheck: true
       };
-      return <MortgageListItem key={rowID} {...props} />;
+      return <MortgageListItem key={rowID} {...props} hideOverdue={hideOverdue} />;
     };
 
     const showFollowup = () => {
+      const selectedFollowupState = this.state.followUp['tabs'+ this.state.tabIndex]
       return this.state.followUp["tabs" + this.state.tabIndex].length > 0 ? (
         <FollowUp
           loanBankData={this.state.loanBank}
           serviceProcess={this.state.serviceProcess}
           btns={this.props.followUpBtns}
-          saleServiceGUIDs={this.state.followUp['tabs'+ this.state.tabIndex].map(val=> val.SaleServiceGUID)}
+          saleServiceGUIDs={selectedFollowupState.map(val=> val.SaleServiceGUID)}
+          selectedSequence={Array.isArray(selectedFollowupState) ? selectedFollowupState[0].Sequence : 0}
           resetFollowUp={this.resetFollowUp}
+          showParentLoading={this.showParentLoading}
+          serviceType={this.props.serviceType}
+          isAfterSale={true}
         />
       ) : null;
     };
@@ -321,6 +360,15 @@ class AfterSale extends React.Component {
       { title: "受理中" , total: this.state.tabsTotal1 }, 
       { title: "已放款" , total: this.state.tabsTotal2 }
     ];
+
+    if (customTabs && Array.isArray(customTabs)) {
+      tabs.forEach((item, idx)=>{
+        tabs[idx] = {
+          ...item,
+          ...customTabs[idx]
+        }
+      })
+    }
 
     const renderTab = (tab)=>{
       return (
@@ -362,9 +410,7 @@ class AfterSale extends React.Component {
                     direction={this.state.direction}
                     refreshing={this.state.tab0Refreshing}
                     onRefresh={() => this.loaTabs0WithRefresh()}
-                    style={{
-                      overflow: "auto"
-                    }}
+                    className={'customPullToRefresh'}
                   >
                     {this.state.notHandled.map((item, index) => {
                       const props = {
@@ -379,6 +425,8 @@ class AfterSale extends React.Component {
                           key={item.SaleServiceGUID}
                           {...props}
                           canGetProcess={canGetProcess}
+                          hideOverdue={this.props.hideOverdue}
+                          selectedItem={this.state.followUp.tabs0}
                         />
                       );
                     })}
@@ -404,13 +452,13 @@ class AfterSale extends React.Component {
                     direction={this.state.direction}
                     refreshing={this.state.tab1Refreshing}
                     onRefresh={() => this.loaTabs1WithRefresh()}
-                    style={{
-                      overflow: "auto"
-                    }}
+                    className={'customPullToRefresh'}
                   >
                     <AccordionList
                       followUpHandle={this.tabs1FollowUp}
                       data={this.state.handling}
+                      hideOverdue={this.props.hideOverdue}
+                      selectedItem={this.state.followUp.tabs1}
                     />
                   </PullToRefresh>
                 ) : (
@@ -448,6 +496,7 @@ class AfterSale extends React.Component {
                     direction={this.state.direction}
                     refreshing={this.state.tab2Refreshing}
                     onRefresh={this.loaTabs2WithRefresh}
+                    className={'customPullToRefresh'}
                   />
                 }
               />
@@ -463,9 +512,10 @@ class AfterSale extends React.Component {
 }
 
 AfterSale.defaultProps = {
+  hideOverdue: true,
   canGetProcess: false,
   searchList: [0, 1, 2],
-  followUpBtns: 
+  followUpBtns:
     [
       {
         attr: 'bank',
@@ -500,4 +550,4 @@ const mapStateToProps = (state)=>({
   projectID: state.project.projGUID
 })
 
-export default connect(mapStateToProps)(AfterSale);
+export default connect(mapStateToProps, { setBankData })(AfterSale);

@@ -16,6 +16,7 @@ const customIcon = () => (
     </g>
   </svg>
 );
+
 const StepTitle = ({SaleServiceProcGUID, completeDate, title, SaleServiceGUID, setShowLoading, fetchData}, hasDel)=>{
   const handleDel = () =>{
     alert('删除', '确认是否删除?', [
@@ -77,7 +78,7 @@ const Processing = ({saleServiceGUID})=>{
             <p className={styles.record}>记录({processData.length})</p>
             <Steps className={styles.steps}>
               {
-                processData.map((item, index) =>{
+                processData.reverse().map((item, index) =>{
                   const hasDel = index === (processData.length - 1) ? true : false;
                   return <Step status="process" key={index} icon={customIcon()} title={StepTitle({...item, setShowLoading, fetchData}, hasDel)} description={StepDesc(item)} />
                 })

@@ -8,7 +8,6 @@ import {
 } from "antd-mobile";
 import { connect } from 'react-redux';
 import { PayTraceList } from "../../components/PayTraceList";
-import { PayTraceListItem } from "../../components/PayTraceListItem";
 import {
   unSignedPayTrace,
   notMortgagePayTrace,
@@ -205,6 +204,11 @@ class PayTrace extends React.Component {
       [config[index]]: []
     })
   }
+  showParentLoading = ()=>{
+    this.setState({
+      ['tabs'+this.state.tabIndex+'Loading']: true
+    })
+  }
 
   resetFollowUp = ()=>{
     this.setState( prev => ({
@@ -244,6 +248,8 @@ class PayTrace extends React.Component {
           payTraceData={payTraceData}
           saleServiceGUIDs={saleServiceGUIDs()}
           resetFollowUp={this.resetFollowUp}
+          showParentLoading={this.showParentLoading}
+          serviceType={'payTrace'}
         />
       ) : null;
     };
@@ -295,13 +301,12 @@ class PayTrace extends React.Component {
                     direction={this.state.direction}
                     refreshing={this.state.tab0Refreshing}
                     onRefresh={() => this.loaTabs0WithRefresh()}
-                    style={{
-                      overflow: "auto"
-                    }}
+                    className={'customPullToRefresh'}
                   >
                     <PayTraceList
                       followUpHandle={this.tabs0FollowUp}
                       data={this.state.notHandled}
+                      tabIndex={this.state.tabIndex}
                     />
                   </PullToRefresh>
                 ) : (
@@ -325,24 +330,13 @@ class PayTrace extends React.Component {
                     direction={this.state.direction}
                     refreshing={this.state.tab1Refreshing}
                     onRefresh={() => this.loaTabs1WithRefresh()}
-                    style={{
-                      overflow: "auto"
-                    }}
+                    className={'customPullToRefresh'}
                   >
                     <PayTraceList
                       followUpHandle={this.tabs1FollowUp}
                       data={this.state.handling}
+                      tabIndex={this.state.tabIndex}
                     />
-                    {/* {this.state.handling.map((item, index) => {
-                      const props = {
-                        ...item,
-                        endDate: item.lastDate,
-                        unpaidMoney: item.money,
-                        followUpHandle: this.tabs1FollowUp,
-                        data: item
-                      };
-                      return <PayTraceListItem key={index} {...props} />;
-                    })} */}
                   </PullToRefresh>
                 ) : (
                   <NoData onRefresh={this.loaTabs1WithRefresh} />
@@ -365,24 +359,13 @@ class PayTrace extends React.Component {
                     direction={this.state.direction}
                     refreshing={this.state.tab2Refreshing}
                     onRefresh={() => this.loaTabs2WithRefresh()}
-                    style={{
-                      overflow: "auto"
-                    }}
+                    className={'customPullToRefresh'}
                   >
                     <PayTraceList
                       followUpHandle={this.tabs2FollowUp}
                       data={this.state.handled}
+                      tabIndex={this.state.tabIndex}
                     />
-                    {/* {this.state.handled.map((item, index) => {
-                      const props = {
-                        ...item,
-                        endDate: item.lastDate,
-                        unpaidMoney: item.money,
-                        followUpHandle: this.tabs2FollowUp,
-                        data: item
-                      };
-                      return <PayTraceListItem key={index} {...props} />;
-                    })} */}
                   </PullToRefresh>
                 ) : (
                   <NoData onRefresh={this.loaTabs2WithRefresh} />
@@ -416,14 +399,14 @@ PayTrace.defaultProps = {
               category: 'mortgage',
               attr: 'closeTime',
               props: {},
-              label: '闭合时间'
+              label: ['闭合时间', '闭合时间']
             },
             {
               type: 'DatePicker',
               category: 'mortgage',
               attr: 'payTraceTime',
               props: {},
-              label: '预计回款日期'
+              label: ['预计签约日期', '预计回款日期'],
             },
             {
               type: 'TextareaItem',

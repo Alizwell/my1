@@ -9,5 +9,6 @@ export const loanBankFormat = original => {
 }
 
 export const loanBankFilter = original => {
-  return original.filter(item => parseInt(item.IsSys) === 0)
+  // return original.filter(item => parseInt(item.IsSys) === 0)
+  return original.filter(item => item)
 }

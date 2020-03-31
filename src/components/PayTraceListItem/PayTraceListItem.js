@@ -1,14 +1,12 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
 import { Flex, Checkbox, List, WhiteSpace } from "antd-mobile";
-import moment from "moment";
 import styles from "./PayTraceListItem.module.scss";
+import { moneyFormat, timeFormat } from '../../utils/utils';
+import OverDueDays from '../OverDueDays';
 
-const AgreeItem = Checkbox.AgreeItem;
 const CheckboxItem = Checkbox.CheckboxItem;
 
 const Item = List.Item;
-const timeFormat = time => moment(time).format("YYYY-MM-DD");
 const PayTraceListItem = props => {
   let {
     buildingNo,
@@ -16,13 +14,14 @@ const PayTraceListItem = props => {
     paymentMethod,
     overdueDays,
     endDate,
-    dataCreated,
-    unSignedReason,
+    subscribeDate,
+    expectPayDate,
+    unPaidReason,
     estimatedSigningTime,
     unpaidMoney,
     data,
     followUpHandle,
-    canGetProcess
+    tabIndex
   } = props;
 
   const onChange = e => {
@@ -35,11 +34,11 @@ const PayTraceListItem = props => {
       followUpHandle && followUpHandle(data.tradeGUID, "del");
     }
   };
-  let history = useHistory();
+  // let history = useHistory();
 
-  const handleItemClk = e => {
-    history.push({ pathname: "/detail", state: { saleServiceGUID: null } });
-  };
+  // const handleItemClk = e => {
+  //   history.push({ pathname: "/detail", state: { saleServiceGUID: null } });
+  // };
 
   return (
     <div>
@@ -51,7 +50,7 @@ const PayTraceListItem = props => {
                 <span>{buildingNo}</span>
               </Flex.Item>
               <Flex.Item className={"rightText"}>
-                <span>未回款: {(Number(unpaidMoney) / 10000).toFixed(0) + " 万"}</span>
+                <span>未回款: {moneyFormat(unpaidMoney)}</span>
               </Flex.Item>
             </Flex>
             <WhiteSpace />
@@ -59,28 +58,50 @@ const PayTraceListItem = props => {
               <Flex.Item>
                 <span>{`${customName} 付款方式: ${paymentMethod}`}</span>
               </Flex.Item>
-              <Flex.Item className={"rightText"}>
-                <span style={{ color: "red" }}>逾期天数: {overdueDays}</span>
-              </Flex.Item>
+              { tabIndex !== 2 &&
+                <Flex.Item className={"rightText"}>
+                  <OverDueDays days={overdueDays} />
+                </Flex.Item>
+              }
             </Flex>
             <WhiteSpace />
             <Flex justify="between">
               <Flex.Item style={{ overflow: "hidden" }}>
-                <span>认购日期: {timeFormat(dataCreated)}</span>
+                <span>认购日期: {timeFormat(subscribeDate)}</span>
               </Flex.Item>
-              <Flex.Item className={"rightText"}>
-                <span>预计签约日期: {timeFormat(estimatedSigningTime)}</span>
+            </Flex>
+            { tabIndex === 0 &&
+              <>
+                <WhiteSpace />
+                <Flex>
+                  <Flex.Item>
+                    <span>预计签约日期: {timeFormat(estimatedSigningTime)}</span>
+                  </Flex.Item>
+                </Flex>
+              </>
+            }
+            <WhiteSpace />
+            <Flex>
+              <Flex.Item>
+                <span>预计回款日期: {timeFormat(expectPayDate)}</span>
               </Flex.Item>
             </Flex>
             <WhiteSpace />
             <Flex justify="between">
-              <Flex.Item>
-                <span>未签约原因: {unSignedReason}</span>
-              </Flex.Item>
               <Flex.Item className={styles.endDate}>
                 <span>闭合时间: {timeFormat(endDate)}</span>
               </Flex.Item>
             </Flex>
+            { tabIndex === 2 &&
+              <>
+                <WhiteSpace />
+                <Flex>
+                    <Flex.Item>
+                      <span>未回款原因: {unPaidReason}</span>
+                    </Flex.Item>
+                </Flex>
+              </>
+            }
           </div>
         </CheckboxItem>
       </Item>
@@ -93,7 +114,8 @@ PayTraceListItem.defaultProps = {
   customName: "test",
   paymentMethod: "测试",
   overdueDays: 0,
-  estimatedSigningTime: "",
+  estimatedSigningTime: null,
+  subscribeDate: null,
   endDate: ''
 };
 

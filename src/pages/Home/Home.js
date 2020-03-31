@@ -27,18 +27,33 @@ class Home extends React.Component {
     }
     let pathName = this.props.history.location.pathname;
     if (pathName === "/home") {
-      this.setState({
-        selectedTab: "tab0"
-      });
-      this.props.history.replace("/home/service");
+      if (this.props.projectID.length === 0) {
+        this.setState({
+          selectedTab: "tab2"
+        });
+        this.props.history.replace("/home/self");
+      } else {
+        this.setState({
+          selectedTab: "tab0"
+        });
+        this.props.history.replace("/home/service");
+      }
     } else if (pathName === "/home/payTrace") {
       this.setState({
         selectedTab: "tab1"
       });
     } else if (pathName === "/home/service") {
-      this.setState({
-        selectedTab: "tab0"
-      });
+      if (this.props.projectID.length === 0) {
+        this.setState({
+          selectedTab: "tab2"
+        });
+        this.props.history.replace("/home/self");
+      } else {
+        this.setState({
+          selectedTab: "tab0"
+        });
+        this.props.history.replace("/home/service");
+      }
     } else if (pathName === "/home/self") {
       this.setState({
         selectedTab: "tab2"
@@ -47,6 +62,17 @@ class Home extends React.Component {
       this.setState({
         selectedTab: "tab0"
       });
+    }
+  }
+  
+  componentDidUpdate(){
+    let pathName = this.props.history.location.pathname;
+    if (pathName === "/home/service") {
+      if (this.state.selectedTab !== 'tab0') {
+        this.setState({
+          selectedTab: "tab0"
+        });
+      }
     }
   }
 

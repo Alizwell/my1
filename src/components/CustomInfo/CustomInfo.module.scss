@@ -13,3 +13,39 @@
     }
   }
 }
+
+.hidden{
+  display: none !important;
+}
+
+.textRight{
+  :global{
+    .am-list-line{
+      .am-input-control > input{
+        text-align: right;
+      }
+    }
+  }
+}
+
+.customFlex{
+  :global{
+    .am-list-line{
+      .am-list-content{
+        flex-grow: 0;
+        flex-basis: auto;
+        flex-shrink: 0;
+        padding-right: 1rem;
+      }
+
+      .am-list-extra{
+        flex-basis: auto;
+        flex-grow: 1;
+      }
+      .am-input-label.am-input-label-5{
+        width: auto;
+        padding-right: 1rem;
+      }
+    }
+  }
+}

@@ -6,6 +6,8 @@ import styles from "./MortgageListItem.module.scss";
 import moment from 'moment';
 import cx from 'classnames';
 import { setDetail } from '../../redux/action/detail';
+import { afterSaleFormat } from '../../adaptor/mortgage.adaptor';
+import OverDueDays from '../OverDueDays';
 
 const momentFormat = time => moment(time).format('YYYY-MM-DD HH:mm')
 const AgreeItem = Checkbox.AgreeItem;
@@ -14,7 +16,6 @@ const MortgageListItem = props => {
   let {
     buildingNo,
     customName,
-    customPhone,
     remark,
     lastProcessingDate,
     overDueDays,
@@ -23,8 +24,9 @@ const MortgageListItem = props => {
     data,
     followUpHandle,
     noCheck,
-    canGetProcess,
-    setDetail
+    setDetail,
+    hideOverdue,
+    selectedItem
   } = props;
 
   const onChange = (e)=>{
@@ -38,6 +40,12 @@ const MortgageListItem = props => {
   }
 
   let history = useHistory();
+  const pathname = history.location.pathname;
+  const serviceType = pathname.includes('commonFound') 
+                      ? 'commonFound'
+                      : pathname.includes('contract')
+                        ? 'contract'
+                        : 'mortgage'; 
   const handleItemClk = (e)=>{
     history.push(
       { 
@@ -47,12 +55,14 @@ const MortgageListItem = props => {
         }
       }
     );
-    setDetail({...props})
+    setDetail({...afterSaleFormat(props), serviceType})
   }
+
+  const isChecked = Array.isArray(selectedItem) && selectedItem.findIndex( item => item.SaleServiceGUID === SaleServiceGUID) > -1
 
   return (
       <Item className={styles.item}>
-        <AgreeItem className={cx(styles.agreeItem, {[styles.hideCheckBox]: noCheck})} onChange={onChange}>
+        <AgreeItem className={cx(styles.agreeItem, {[styles.hideCheckBox]: noCheck})} onChange={onChange} checked={isChecked}>
           <div className={'listItemContent'} onClick={handleItemClk}>
             <Flex justify="between">
               <Flex.Item className={"textEllipsis"}>
@@ -67,9 +77,12 @@ const MortgageListItem = props => {
               <Flex.Item>
                 <span>{customName}</span>
               </Flex.Item>
-              <Flex.Item className={"rightText"}>
-                <span style={{ color: "red" }}>逾期天数: {overDueDays}</span>
-              </Flex.Item>
+              { !hideOverdue && 
+                <Flex.Item className={"rightText"}>
+                  {/* <span style={{ color: "red" }}>逾期天数: {overDueDays}</span> */}
+                  <OverDueDays days={overDueDays} />
+                </Flex.Item>
+              }
             </Flex>
             <WhiteSpace />
             <Flex justify="start">

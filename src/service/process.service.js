@@ -38,7 +38,7 @@ export const getContractServiceProcess = params =>
     serviceProcess: "合同登记"
   });
 
-export const getCommonFoundtServiceProcess = params =>
+export const getCommonFoundServiceProcess = params =>
   getServiceProcess({
     ...params,
     serviceProcess: "公积金贷款"
@@ -96,5 +96,56 @@ export const setProjectReason = ({
     remark,
     bhdate,
     hkdate
+  }
+})
+
+
+//handle the bank
+export const setServiceBank = ({
+  saleServiceGUIDlist,
+  serviceitem,
+  bank,
+  bankyear
+})=> api.get('/api/HandledProcess/DoHandledProcessBank', {
+  params: {
+    saleServiceGUIDlist,
+    serviceitem,
+    bank,
+    bankyear
+  }
+})
+
+//handle process detail info
+export const setProcessDetail = ({
+  saleServiceGUIDlist,
+  serviceitem,
+  djr = '',
+  issq = '',
+  wscl = '',
+  reason = '',
+  ajbank = '',
+  ajyear = '',
+  ajtotal = '',
+  gjjbank = '',
+  gjjyear = '',
+  gjjtotal = '',
+  badate  = '',
+  bano = ''
+})=>api.get('/api/HandledProcess/DoHandledSaleInfo',{
+  params: {
+    saleServiceGUIDlist,
+    serviceitem,
+    djr,
+    issq,
+    wscl,
+    reason,
+    ajbank,
+    ajyear,
+    ajtotal,
+    gjjbank,
+    gjjyear,
+    gjjtotal,
+    badate ,
+    bano
   }
 })

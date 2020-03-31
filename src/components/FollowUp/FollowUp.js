@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import { setHandledProcess, setProjectReason } from '../../service/process.service';
+import { setHandledProcess, setProjectReason, setServiceBank } from '../../service/process.service';
 import { getTokenInfoFromCookie } from '../../utils/cookie';
 import {
   Button,
@@ -8,11 +8,21 @@ import {
   List,
   DatePicker,
   Picker,
-  TextareaItem
+  TextareaItem,
+  Toast
 } from "antd-mobile";
 import styles from "./Follow.module.scss";
 
-const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBankData, serviceProcess, payTraceData, saleServiceGUIDs, resetFollowUp})=>{
+
+const checkVal = ({val, name}) => {
+  if (!val) {
+    Toast.info(`请选择${name}!!!`, 1);
+    return false;
+  }
+  return true;
+}
+
+const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBankData, serviceProcess, payTraceData, saleServiceGUIDs, resetFollowUp, showParentLoading, serviceType, isAfterSale, selectedSequence})=>{
   const [modalState, setModalState] = useState({
     isVisible: false,
     loanBank: "",
@@ -47,11 +57,17 @@ const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBan
           "default": pickerData
         }
 
-        const data = config[item.category] ? config[item.category] : pickerData;
-        const lable = item.category !== 'mortgage' 
+        let data = config[item.category] ? config[item.category] : pickerData;
+        const label = item.category !== 'mortgage' 
                 ? item.label 
                 : item.label[payTraceType];
 
+        //需要进行售后服务中的process的进程筛选，需要拿到当前的process sequenece进行对比
+        if (isAfterSale) {
+          data = data.filter( item => {
+            return Number(item.Sequence) > Number(selectedSequence);
+          })
+        }
         return (
         <Picker
           key={idx}
@@ -62,11 +78,15 @@ const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBan
           onOk={v => onSelectChange(item.category, v)}
         >
           <List.Item arrow="horizontal">
-            {lable}
+            {label}
           </List.Item>
         </Picker>);
       }
       case 'DatePicker': {
+        const label = item.category !== 'mortgage' 
+                ? item.label 
+                : item.label[payTraceType];
+
         return (<DatePicker
           key={idx}
           mode="date"
@@ -75,7 +95,7 @@ const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBan
           value={modalState[item.attr]}
           onChange={v => onDateChange(item.attr, v)}
         >
-          <List.Item arrow="horizontal">{item.label}</List.Item>
+          <List.Item arrow="horizontal">{label}</List.Item>
         </DatePicker>)
       }
       case 'TextareaItem': {
@@ -92,11 +112,13 @@ const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBan
     }
   }
 
-  const commitAfterSale = ()=>{
-    let targetItem = serviceProcess.find( v => Number(v.value) === Number(modalState.process) );
-    if(targetItem){
+  const commitAfterSaleProcess = async ()=>{
+    let selectVal = modalState.process;
+    let checkResult = checkVal({val: selectVal, name: '进程'});
+    let targetItem = serviceProcess.find( v => Number(v.value) === Number(selectVal) );
+    if(checkResult && targetItem){
       const tokenInfo = getTokenInfoFromCookie();
-      setHandledProcess({
+      await setHandledProcess({
         saleServiceGUIDs: saleServiceGUIDs.join(';'),
         serviceproc: targetItem && targetItem.ServiceProc,
         jbr: tokenInfo.userName,
@@ -105,15 +127,32 @@ const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBan
     }
   }
 
-  const commitPayTrace = ()=>{
+  const commitPayTrace = async ()=>{
     let targetItem = payTraceData.find( v => String(v.value) === String(modalState[modalState.category]) );
     if(targetItem){
-      setProjectReason({
+      await setProjectReason({
         itemGuidList: saleServiceGUIDs.join(';'),
         reason: targetItem && targetItem.ArrearageReasonParamName,
-        remark: modalState.remark,
+        remark: modalState.remark ? modalState.remark : '',
         bhdate: modalState.closeTime,
         hkdate: modalState.payTraceTime
+      })
+    }
+  }
+
+  const commitBank = async ()=>{
+    const config = {
+      'commonFound': '公积金',
+      'mortgage': '按揭'
+    }
+  
+    let targetItem = loanBankData.find( v => String(v.BankGUID) === String(modalState[modalState.category]) );
+    if (targetItem) {
+      await setServiceBank({
+        saleServiceGUIDlist: saleServiceGUIDs.join(';'),
+        serviceitem: config[serviceType],
+        bank: targetItem && targetItem.BankName,
+        bankyear: 'null'
       })
     }
   }
@@ -132,11 +171,27 @@ const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBan
         },
         {
           text: "提交",
-          onPress: () => {
+          onPress: async () => {
+            if (!modalState.category) {
+              return serviceType === 'payTrace' 
+                ? Toast.info('请选择原因!!!', 1)
+                : Toast.info('请选择数据!!!', 1);
+            }
             if (modalState.category === 'process') {
-              commitAfterSale();
+              showParentLoading && showParentLoading();
+              await commitAfterSaleProcess();
+            } else if (modalState.category === 'bank') {
+              showParentLoading && showParentLoading();
+              await commitBank();
             } else {
-              commitPayTrace();
+              let selectVal = modalState[modalState.category];
+              let checkResult1 = checkVal({val: selectVal, name: '原因'});
+              let checkResult2 = checkResult1 && checkVal({val: modalState.closeTime, name: '闭合时间'});
+              let checkResult3 = checkResult2 && checkVal({val: modalState.payTraceTime, name: payTraceType === 0 ? '预计签约日期' : '预计回款日期'});
+              if (checkResult3) {
+                showParentLoading && showParentLoading();
+                await commitPayTrace();
+              } else { return false;}
             }
             onClose()
             resetFollowUp && resetFollowUp();
@@ -178,10 +233,14 @@ const BottomBtn = ({
   btns,
   loanBankData,
   serviceProcess,
-  payTraceType,
+  payTraceType, //区分tabs0 和tabs1与tabs2  tans0的值为0, tasb1和tabs2的值为1
   payTraceData,
   saleServiceGUIDs,
-  resetFollowUp
+  resetFollowUp,
+  showParentLoading,
+  serviceType,
+  selectedSequence,
+  isAfterSale
 })=>{
   const [modalContent, setModalContent] = useState([])
   const [showModal, setShowModal] = useState(false);
@@ -222,6 +281,10 @@ const BottomBtn = ({
           payTraceData={payTraceData}
           saleServiceGUIDs={saleServiceGUIDs}
           resetFollowUp={resetFollowUp}
+          showParentLoading={showParentLoading}
+          serviceType={serviceType}
+          isAfterSale={isAfterSale}
+          selectedSequence={selectedSequence}
         />
       }
     </div>

@@ -2,14 +2,15 @@ import axios from "axios";
 import { getTokenFromStore } from "../redux/selectors/user.selector";
 import { getProjGUIDFromStore } from "../redux/selectors/project.selector";
 import qs from "qs";
+import { appConfig } from '../config';
 
-// const baseURL = "http://39.98.108.23/webapi/";
 // const baseURL = "http://39.98.108.23/webapi_20200217/";
+// console.log( appConfig, '---appConfiguration');
 // const baseURL = "http://localhost:3000/webapi/";
-const baseURL = "http://192.168.1.5:3000/webapi_20200217/";
+// const baseURL = "http://192.168.1.6:3000/webapi_20200217/";
 // const baseURL = "http://192.168.1.5:3000/webapi/";
-// application/x-www-form-urlencoded; charset=utf-8;
-// application/json; charset=utf-8;
+const baseURL = appConfig.APIHostOverride;
+
 let headers = {
   "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
 };
@@ -31,11 +32,8 @@ api.interceptors.request.use(
       config.data = qs.stringify(config.data);
     }
     if (config.method === "get" && !config.url.includes('ProjectInfoQuery') ) {
-      // buGUID = [];
-      // projGUID = [];
       config.params = {
         ...config.params,
-        // bUGUID: buGUID.length > 0 ? buGUID.join(",") : null,
         projGUID: projGUID.length > 0 ? projGUID.join(",") : ''
       };
     }

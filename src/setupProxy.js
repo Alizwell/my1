@@ -8,7 +8,7 @@ module.exports = function(app) {
       target: "http://39.98.108.23/",
       changeOrigin: true,
       router: {
-        "http://192.168.1.5:3000": "http://39.98.108.23/"
+        "http://192.168.1.6:3000": "http://39.98.108.23/"
       },
       pathRewrite: {
         "^/api": ""

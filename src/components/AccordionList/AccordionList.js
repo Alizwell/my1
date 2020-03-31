@@ -15,7 +15,7 @@ const HeaderContent = ({ header, extraText }) => {
 };
 
 const AccordionList = props => {
-  const { data: handlingData, followUpHandle, noCheck } = props;
+  const { data: handlingData, followUpHandle, noCheck, hideOverdue, selectedItem } = props;
   return (
     <div>
       <Accordion>
@@ -36,9 +36,10 @@ const AccordionList = props => {
                   isDataComplete: item.isNoInformationReceived,
                   followUpHandle: followUpHandle,
                   data: item,
-                  noCheck
+                  noCheck,
+                  selectedItem
                 };
-                return <MortgageListItem key={idx} {...props} />;
+                return <MortgageListItem key={idx} {...props} hideOverdue={hideOverdue} />;
               })}
             </Accordion.Panel>
           );

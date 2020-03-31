@@ -42,8 +42,8 @@ export const handlingAfterSale = (params) => {
   return afterSaleService({...params, reclassify: '受理中'} ,"/api/MortgageLoan/DoingHandledQuery")
 };
 
-export const handledAfterSale = (params) => {
-  return afterSaleService({...params, reclassify: '已放款'} ,"/api/MortgageLoan/LoanHandledQuery")
+export const handledAfterSale = (params, reclassify = '已放款') => {
+  return afterSaleService({...params, reclassify: reclassify} ,"/api/MortgageLoan/LoanHandledQuery")
 };
 
 // mortgageLoan service
@@ -90,10 +90,10 @@ export const handlingContract = (params) => handlingAfterSale({
   serviceProcess:"合同登记"
 })
 
-export const handledContract = (params) => handledAfterSale({
+export const handledContract = (params, reclassify = '已放款') => handledAfterSale({
   ...params,
   serviceProcess:"合同登记"
-})
+}, reclassify)
 
 export const getLoanBank = ({
   bUGUID,

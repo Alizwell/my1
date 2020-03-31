@@ -41,3 +41,12 @@ code {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* .am-pull-to-refresh {
+  transform: translate3d(0,0,0)
+} */
+
+.customPullToRefresh{
+  height: 100%;
+  overflow: auto;
+}
