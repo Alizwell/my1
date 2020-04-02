@@ -12,6 +12,7 @@ import {
   Toast
 } from "antd-mobile";
 import styles from "./Follow.module.scss";
+import { handleRequestResult } from '../../utils/toast';
 
 
 const checkVal = ({val, name}) => {
@@ -63,7 +64,7 @@ const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBan
                 : item.label[payTraceType];
 
         //需要进行售后服务中的process的进程筛选，需要拿到当前的process sequenece进行对比
-        if (isAfterSale) {
+        if (isAfterSale && item.category === 'process') {
           data = data.filter( item => {
             return Number(item.Sequence) > Number(selectedSequence);
           })
@@ -112,6 +113,8 @@ const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBan
     }
   }
 
+  
+
   const commitAfterSaleProcess = async ()=>{
     let selectVal = modalState.process;
     let checkResult = checkVal({val: selectVal, name: '进程'});
@@ -122,8 +125,9 @@ const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBan
         saleServiceGUIDs: saleServiceGUIDs.join(';'),
         serviceproc: targetItem && targetItem.ServiceProc,
         jbr: tokenInfo.userName,
-        procmemo: ''
-      });
+        procmemo: saleServiceGUIDs.length > 1 ? 'null' : '0'
+        // procmemo: ''
+      }).then(handleRequestResult);
     }
   }
 
@@ -136,7 +140,7 @@ const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBan
         remark: modalState.remark ? modalState.remark : '',
         bhdate: modalState.closeTime,
         hkdate: modalState.payTraceTime
-      })
+      }).then(handleRequestResult)
     }
   }
 
@@ -153,7 +157,7 @@ const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBan
         serviceitem: config[serviceType],
         bank: targetItem && targetItem.BankName,
         bankyear: 'null'
-      })
+      }).then(handleRequestResult)
     }
   }
 

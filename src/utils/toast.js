@@ -7,3 +7,13 @@ export function successToast() {
 export function failToast() {
   Toast.fail('提交失败!!!', 1);
 }
+
+export function handleRequestResult (data) {
+  console.log(data, '---data')
+  if (data.data.StatusCode === 200) {
+    successToast();
+  } else {
+    failToast();
+    // console.error(data.data.HttpRequestMessage)
+  }
+}

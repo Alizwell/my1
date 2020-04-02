@@ -12,7 +12,7 @@ import styles from "./Self.module.scss";
 import { ReactComponent as Logout } from '../../assets/imgs/icon-logout.svg';
 import { logoutCookie, setProjectInfo } from '../../utils/cookie'; 
 import { withRouter } from 'react-router';
-import { getBuGUIDFromCookie } from "../../redux/selectors/project.selector";
+import { getBuGUIDFromCookie, getProjGUIDFromCookie } from "../../redux/selectors/project.selector";
 import { useHistory } from "react-router-dom";
 
 const alert = Modal.alert;
@@ -88,7 +88,8 @@ class Self extends React.Component {
   };
   componentDidMount() {
     const bUGUID = getBuGUIDFromCookie();
-    getProject({bUGUID: bUGUID.join(",") , projGUID: null}).then(data => {
+    const projGUID = getProjGUIDFromCookie();
+    getProject({bUGUID: bUGUID.length > 0 ? bUGUID.join(",") : '*' , projGUID: projGUID.length > 0 ? projGUID.join(',') : '*'}).then(data => {
       this.setState({
         isLoading: false,
         renderData: data.data.HttpContent.length > 0 ? data.data.HttpContent[0] : null

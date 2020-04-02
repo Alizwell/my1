@@ -17,14 +17,14 @@ const customIcon = () => (
   </svg>
 );
 
-const StepTitle = ({SaleServiceProcGUID, completeDate, title, SaleServiceGUID, setShowLoading, fetchData}, hasDel)=>{
+const StepTitle = ({SaleServiceProcGUID, completeDate, title, SaleServiceGUID, setShowLoading, fetchData, stateSaleServiceGUID}, hasDel)=>{
   const handleDel = () =>{
     alert('删除', '确认是否删除?', [
       { text: '否', onPress: () => console.log('cancel') },
       { text: '是', onPress: () => {
         setShowLoading(true);
         delProcessDetail({saleServiceProcGUIDs: SaleServiceProcGUID, saleServiceGUID: SaleServiceGUID}).then(data=>{
-          fetchData({saleServiceGUID: SaleServiceProcGUID});
+          fetchData({saleServiceGUID: stateSaleServiceGUID});
         });
       } },
     ])
@@ -79,8 +79,8 @@ const Processing = ({saleServiceGUID})=>{
             <Steps className={styles.steps}>
               {
                 processData.reverse().map((item, index) =>{
-                  const hasDel = index === (processData.length - 1) ? true : false;
-                  return <Step status="process" key={index} icon={customIcon()} title={StepTitle({...item, setShowLoading, fetchData}, hasDel)} description={StepDesc(item)} />
+                  const hasDel = (index === (processData.length - 1) && index !== 0 ) ? true : false;
+                  return <Step status="process" key={index} icon={customIcon()} title={StepTitle({...item, setShowLoading, fetchData, stateSaleServiceGUID: saleServiceGUID}, hasDel)} description={StepDesc(item)} />
                 })
               }
             </Steps>

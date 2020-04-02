@@ -318,6 +318,13 @@ class AfterSale extends React.Component {
     }), async () =>{
       this.resetHandleData(this.state.tabIndex);
       await this['loaTabs'+ this.state.tabIndex +'WithRefresh']();
+      if (this.state.tabIndex === 0) {
+        this.loaTabs1WithRefresh()
+        this.loaTabs2WithRefresh()
+      } else if (this.state.tabIndex === 1) {
+        this.loaTabs2WithRefresh()
+      }
+
       this.setState({
         ['tabs'+this.state.tabIndex+'Loading']: false
       })

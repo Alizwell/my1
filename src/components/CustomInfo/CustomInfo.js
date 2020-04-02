@@ -100,7 +100,7 @@ const CustomInfo = ({detailInfo, bankData}) => {
           <Picker
             data={bankData}
             cols={1}
-            value={formData.mortgageBank}
+            value={Array.isArray(formData.mortgageBank) ? formData.mortgageBank : [formData.mortgageBank]}
             onChange={v => onInputChange("mortgageBank", v)}
             onOk={v => onInputChange("mortgageBank", v)}
           >
@@ -187,7 +187,7 @@ const CustomInfo = ({detailInfo, bankData}) => {
         >
           对接人员
         </InputItem>
-        <InputItem
+        {/* <InputItem
           className={cx(styles.customFlex, styles.textRight, {[styles.hidden]: serviceType !== 'mortgage'})}
           type="number"
           editable={true}
@@ -195,8 +195,8 @@ const CustomInfo = ({detailInfo, bankData}) => {
           onChange={val => onInputChange("mortgageOverdueDate", val)}
           >
           按揭逾期天数
-        </InputItem>
-        <InputItem
+        </InputItem> */}
+        {/* <InputItem
           className={cx(styles.textRight, {[styles.hidden]: serviceType !== 'commonFound'})}
           type="number"
           editable={true}
@@ -204,7 +204,7 @@ const CustomInfo = ({detailInfo, bankData}) => {
           onChange={val => onInputChange("commonFoundOverDueDate", val)}
           >
           公积金逾期天数
-        </InputItem>
+        </InputItem> */}
         <div className={cx({[styles.hidden]: serviceType !== 'contract'})}>
           <DatePicker
             mode="date"
