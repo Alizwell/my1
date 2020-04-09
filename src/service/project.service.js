@@ -15,3 +15,13 @@ export const getProject = ({
         }
     })
 }
+
+export const getProject2 = ( {
+    userCode
+} ) => {
+    return api.get( '/api/ProjectBase/ProjectInfoQuery2', {
+        params: {
+            userCode
+        }
+    } )
+}

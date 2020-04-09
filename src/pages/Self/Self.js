@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Accordion, List, Checkbox, ActivityIndicator, WhiteSpace, Modal } from "antd-mobile";
-import { getProject } from "../../service/project.service";
+import { getProject, getProject2 } from "../../service/project.service";
 import { projectInfoFormat } from "../../adaptor/projectInfo.adaptor";
 import {
   setBuGUID,
@@ -12,7 +12,7 @@ import styles from "./Self.module.scss";
 import { ReactComponent as Logout } from '../../assets/imgs/icon-logout.svg';
 import { logoutCookie, setProjectInfo } from '../../utils/cookie'; 
 import { withRouter } from 'react-router';
-import { getBuGUIDFromCookie, getProjGUIDFromCookie } from "../../redux/selectors/project.selector";
+import { getBuGUIDFromCookie, getProjGUIDFromCookie, getUserCodeFromCookie } from "../../redux/selectors/project.selector";
 import { useHistory } from "react-router-dom";
 
 const alert = Modal.alert;
@@ -54,7 +54,7 @@ const LeafItem = (
 const ProjectTree = (renderData, actions, projectInfo) => {
   const formatData = projectInfoFormat(renderData);
   const subItem =
-    formatData.children.length > 0 ? (
+    formatData.children && formatData.children.length > 0 ? (
       <Accordion key={formatData.projGUID}>
         <Accordion.Panel header={formatData.projName}>
           {formatData.children.map((item, index) => {
@@ -72,7 +72,6 @@ const ProjectTree = (renderData, actions, projectInfo) => {
         actions={actions}
         projectInfo={projectInfo}
       />
-      // LeafItem(formatData, actions, projectInfo)
     );
   return subItem;
 };
@@ -89,12 +88,19 @@ class Self extends React.Component {
   componentDidMount() {
     const bUGUID = getBuGUIDFromCookie();
     const projGUID = getProjGUIDFromCookie();
-    getProject({bUGUID: bUGUID.length > 0 ? bUGUID.join(",") : '*' , projGUID: projGUID.length > 0 ? projGUID.join(',') : '*'}).then(data => {
-      this.setState({
+    // getProject({bUGUID: bUGUID.length > 0 ? bUGUID.join(",") : '*' , projGUID: projGUID.length > 0 ? projGUID.join(',') : '*'}).then(data => {
+    //   this.setState({
+    //     isLoading: false,
+    //     renderData: data.data.HttpContent.length > 0 ? data.data.HttpContent : null
+    //   });
+    // });
+    const userCode = getUserCodeFromCookie()
+    getProject2( { userCode: userCode } ).then( data => {
+      this.setState( {
         isLoading: false,
-        renderData: data.data.HttpContent.length > 0 ? data.data.HttpContent[0] : null
-      });
-    });
+        renderData: data.data.HttpContent.length > 0 ? data.data.HttpContent : null
+      } );
+    } );
   }
 
   onLogout = () =>{
@@ -109,6 +115,7 @@ class Self extends React.Component {
 
   render() {
     const { setBuGUID, setProjGUID } = this.props;
+    const dataTree = this.state.renderData;
     return (
       <div style={{ height: "100%" }}>
         <Helmet>
@@ -118,11 +125,13 @@ class Self extends React.Component {
           <>
             <List renderHeader={() => "请选择项目"}>
               {
-                this.state.renderData ? 
-                ProjectTree({...this.state.renderData}, {
-                  setBuGUID,
-                  setProjGUID
-                }, {selectedProject: this.props.selectedProject}) 
+                dataTree
+                  ? dataTree.map(item =>{
+                    return ProjectTree( { ...item }, {
+                      setBuGUID,
+                      setProjGUID
+                    }, { selectedProject: this.props.selectedProject } ) 
+                  })
                 : <List.Item>无</List.Item>
               }
             </List>

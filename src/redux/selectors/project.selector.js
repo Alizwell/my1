@@ -20,6 +20,10 @@ export const getBuGUIDFromCookie = () => {
   return cookies.userInfo ? cookies.userInfo.BUGUIDs : [];
 };
 
+export const getUserCodeFromCookie = () => {
+  return cookies.userInfo ? cookies.userInfo.UserCode : '';
+};
+
 export const getProjGUIDFromCookie = () => {
   return cookies.userInfo ? cookies.userInfo.ProjGUIDs : [];
 };
