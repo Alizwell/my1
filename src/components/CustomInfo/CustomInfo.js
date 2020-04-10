@@ -70,6 +70,22 @@ const CustomInfo = ({detailInfo, bankData}) => {
       }
     })
 
+    if (serviceConfig[serviceType] === "按揭") {
+      if(sendData.ajtotal === ''){
+        return Toast.info('请填写按揭金额');
+      }
+      if( sendData.ajyear === ''){
+        return Toast.info('请填写按揭年限');
+      }
+    } else if (serviceConfig[serviceType] === "公积金") {
+      if(sendData.gjjtotal === ''){
+        return Toast.info('请填写公积金金额');
+      }
+      if( sendData.gjjyear === ''){
+        return Toast.info('请填写公积金年限');
+      }
+    }
+
     Toast.loading('Loading...', 0, () => {
       console.log('Load complete !!!');
     });
