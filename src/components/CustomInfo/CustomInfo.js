@@ -26,11 +26,9 @@ const CustomInfo = ({detailInfo, bankData}) => {
   const { serviceType, SaleServiceGUID } = detailInfo;
   const [formData, setFormData] = useState({
     ...detailInfo,
-    commonFoundBank: '工商银行集美支行'
   });
 
   const onInputChange = (name, val) => {
-    // console.log(val, '---val');
     setFormData(prev => ({
       ...prev,
       [name]: val
@@ -47,9 +45,9 @@ const CustomInfo = ({detailInfo, bankData}) => {
     const sendData = {
       saleServiceGUIDlist: SaleServiceGUID,
       serviceitem: serviceConfig[serviceType],
-      djr: formData.dockingPeople,
+      djr: formData.dockingPeople ? formData.dockingPeople : '',
       issq: formData.fullMaterial,
-      wscl: formData.unreceivedMaterial,
+      wscl: formData.unreceivedMaterial ? formData.unreceivedMaterial : '', 
       reason: formData.remark,
       ajbank: formData.mortgageBank ? formData.mortgageBank[0]: '',
       ajyear: formData.mortgageYears,
@@ -66,21 +64,30 @@ const CustomInfo = ({detailInfo, bankData}) => {
       badate: formData.recordDate ? formData.recordDate : '',
       bano: formData.recordNumber ? formData.recordNumber : '',
     }
-    
+    Object.keys(sendData).forEach(key=>{
+      if(sendData[key] === undefined || sendData[key] === null ){
+        sendData[key] = '';
+      }
+    })
+
     Toast.loading('Loading...', 0, () => {
       console.log('Load complete !!!');
     });
     try{
       setProcessDetail(sendData).then(data=>{
+          Toast.hide();
+          if (data.data.StatusCode === 200) {
+            successToast();
+          } else {
+            failToast();
+          }
+      }).catch(err=>{
         Toast.hide();
-        if (data.data.StatusCode === 200) {
-          successToast();
-        }
+        failToast();
       });
     } catch (e) {
       Toast.hide();
       failToast();
-      console.log(e);
     }
   }
 

@@ -9,6 +9,7 @@ import {
 } from "../../redux/action/project";
 import { Helmet } from "react-helmet";
 import styles from "./Self.module.scss";
+import cx from 'classnames';
 import { ReactComponent as Logout } from '../../assets/imgs/icon-logout.svg';
 import { logoutCookie, setProjectInfo } from '../../utils/cookie'; 
 import { withRouter } from 'react-router';
@@ -51,16 +52,16 @@ const LeafItem = (
   );
 };
 
-const ProjectTree = (renderData, actions, projectInfo) => {
+const ProjectTree = (renderData, actions, projectInfo, index) => {
   const formatData = projectInfoFormat(renderData);
   const subItem =
     formatData.children && formatData.children.length > 0 ? (
-      <Accordion key={formatData.projGUID}>
+      <Accordion key={formatData.projGUID} className={cx({[styles.bgDark]: index % 2 === 0 })}>
         <Accordion.Panel header={formatData.projName}>
           {formatData.children.map((item, index) => {
             return (
-              <div className={styles.headerSpace} key={index}>
-                {ProjectTree(item, actions, projectInfo)}
+              <div key={index} className={cx(styles.headerSpace, 'item')}>
+                {ProjectTree(item, actions, projectInfo, index)}
               </div>
             );
           })}
@@ -71,6 +72,7 @@ const ProjectTree = (renderData, actions, projectInfo) => {
         formatData={formatData}
         actions={actions}
         projectInfo={projectInfo}
+        className={cx(styles.leafItem, {[styles.bgDark]: index % 2 === 0 })}
       />
     );
   return subItem;
@@ -117,7 +119,7 @@ class Self extends React.Component {
     const { setBuGUID, setProjGUID } = this.props;
     const dataTree = this.state.renderData;
     return (
-      <div style={{ height: "100%" }}>
+      <div className={styles.selfContent}>
         <Helmet>
           <title>我的</title>
         </Helmet>
@@ -126,11 +128,11 @@ class Self extends React.Component {
             <List renderHeader={() => "请选择项目"}>
               {
                 dataTree
-                  ? dataTree.map(item =>{
+                  ? dataTree.map((item, index) =>{
                     return ProjectTree( { ...item }, {
                       setBuGUID,
                       setProjGUID
-                    }, { selectedProject: this.props.selectedProject } ) 
+                    }, { selectedProject: this.props.selectedProject }, index ) 
                   })
                 : <List.Item>无</List.Item>
               }

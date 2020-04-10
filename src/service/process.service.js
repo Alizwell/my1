@@ -132,6 +132,7 @@ export const setProcessDetail = ({
   badate  = '',
   bano = ''
 })=>api.get('/api/HandledProcess/DoHandledSaleInfo',{
+  timeout: 1000 * 8,
   params: {
     saleServiceGUIDlist,
     serviceitem,

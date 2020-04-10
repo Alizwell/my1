@@ -12,3 +12,36 @@
     }
   }
 }
+.leafItem {
+  font-size: 15px;
+}
+
+.selfContent {
+  height: 100%;
+  :global {
+    .am-accordion .am-accordion-item .am-accordion-header {
+      font-size: 15px;
+    }
+    .am-list-item .am-list-line .am-list-content {
+      font-size: 15px;
+    }
+    .am-list-body
+      > .am-accordion
+      > .am-accordion-item
+      > .am-accordion-content
+      > .am-accordion-content-box {
+      & > .item:nth-child(2n) {
+        background: #f1efef;
+        .am-accordion-header {
+          background: #f1efef;
+        }
+        .am-accordion-content.am-accordion-content-active {
+          background-color: #f1efef !important;
+        }
+        .am-list-item.am-checkbox-item.am-list-item-middle {
+          background-color: #f1efef !important;
+        }
+      }
+    }
+  }
+}
