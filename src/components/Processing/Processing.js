@@ -17,9 +17,11 @@ const customIcon = () => (
   </svg>
 );
 
+let alertModal = null;
+
 const StepTitle = ({SaleServiceProcGUID, completeDate, title, SaleServiceGUID, setShowLoading, fetchData, stateSaleServiceGUID}, hasDel)=>{
   const handleDel = () =>{
-    alert('删除', '确认是否删除?', [
+    alertModal = alert('删除', '确认是否删除?', [
       { text: '否', onPress: () => console.log('cancel') },
       { text: '是', onPress: () => {
         setShowLoading(true);
@@ -68,6 +70,9 @@ const Processing = ({saleServiceGUID})=>{
 
   useEffect(()=>{
     fetchData({saleServiceGUID})
+    return () => {
+      alertModal.close();
+    }
   }, [saleServiceGUID])
 
   return (
