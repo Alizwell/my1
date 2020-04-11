@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from 'react-redux';
 import {
   List,
@@ -27,6 +27,12 @@ const CustomInfo = ({detailInfo, bankData}) => {
   const [formData, setFormData] = useState({
     ...detailInfo,
   });
+
+  useEffect(() => {
+    return () => {
+      Toast.hide();
+    }
+  }, [])
 
   const onInputChange = (name, val) => {
     setFormData(prev => ({
@@ -57,7 +63,6 @@ const CustomInfo = ({detailInfo, bankData}) => {
                 ? Array.isArray(formData.commonFoundBank)
                   ? formData.commonFoundBank[0] : ''
                 : '',
-      // gjjbank: 'null',
       gjjyear: formData.commonFoundYears,
       gjjtotal: formData.commonFoundMoney,
       gjjyqts: formData.commonFoundOverdueDate,
@@ -91,12 +96,12 @@ const CustomInfo = ({detailInfo, bankData}) => {
     });
     try{
       setProcessDetail(sendData).then(data=>{
-          Toast.hide();
-          if (data.data.StatusCode === 200) {
-            successToast();
-          } else {
-            failToast();
-          }
+        Toast.hide();
+        if (data.data.StatusCode === 200) {
+          successToast();
+        } else {
+          failToast();
+        }
       }).catch(err=>{
         Toast.hide();
         failToast();
