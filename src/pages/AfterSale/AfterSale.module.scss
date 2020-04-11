@@ -5,14 +5,14 @@
     .am-list-view-scrollview-content {
       position: relative !important;
     }
-    .am-tabs-default-bar-tab{
+    .am-tabs-default-bar-tab {
       padding: 0;
       height: 3rem;
     }
   }
 }
 
-.tabs{
+.tabs {
   background-color: red;
 }
 
@@ -24,7 +24,7 @@
     .am-list-body {
       height: 100%;
     }
-  
+
     .am-pull-to-refresh-content {
       height: 100%;
       -webkit-overflow-scrolling: touch;
@@ -58,8 +58,7 @@
   width: 100%;
 }
 
-
-.tabItem{
+.tabItem {
   height: 100%;
   & > p {
     height: 50%;
@@ -67,6 +66,4 @@
     // line-height: 30px;
     text-align: center;
   }
-
 }
-

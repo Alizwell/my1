@@ -28,9 +28,10 @@ const PayTraceList = props => {
                   : "",
                 extraText: (Number(data.TotalMoney) / 10000).toFixed(0) + " 万"
               })}
-              key={`${data.ArrearageReasonName}_${data.TotalMoney}`}
+              // key={`${data.ArrearageReasonName}_${data.TotalMoney}`}
+              key={idx}
             >
-              {data.List.map((val) => {
+              {data.List.map((val, idx) => {
                 const item = unSignedPayTraceFormat(val);
                 const props = {
                   ...item,
@@ -40,7 +41,8 @@ const PayTraceList = props => {
                   tabIndex
                 };
                 const key = `${props.orderGUID}_${props.FeeGUID}`;
-                return <PayTraceListItem key={key} {...props} />;
+                // return <PayTraceListItem key={key} {...props} />;
+                return <PayTraceListItem key={idx} {...props} />;
               })}
             </Accordion.Panel>
           );

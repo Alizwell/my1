@@ -1,8 +1,8 @@
 .wrapper {
   width: 100%;
   height: calc(100% - 44px);
-  :global{
-    .am-tabs-default-bar-tab{
+  :global {
+    .am-tabs-default-bar-tab {
       padding: 0;
       height: 3rem;
     }
@@ -15,15 +15,18 @@
   :global {
     .am-pull-to-refresh.am-pull-to-refresh-down {
       height: 100%;
-      // .am-pull-to-refresh-content-wrapper {
-      //   height: 100%;
-      //   overflow: auto;
-      // }
     }
+
+    .am-pull-to-refresh-content {
+      height: 100%;
+      -webkit-overflow-scrolling: touch;
+      overflow-scrolling: touch;
+    }
+
     .am-list-body {
       height: 100%;
     }
-    .listItemContent{
+    .listItemContent {
       font-size: 14px;
     }
   }
@@ -34,11 +37,11 @@
   height: 100%;
   align-items: flex-start;
   justify-content: center;
+  -webkit-overflow-scrolling: touch;
+  overflow-scrolling: touch;
 }
 
-
-
-.tabItem{
+.tabItem {
   height: 100%;
   & > p {
     height: 50%;
