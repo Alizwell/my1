@@ -20,7 +20,7 @@ const alert = Modal.alert;
 const CheckboxItem = Checkbox.CheckboxItem;
 
 const LeafItem = (
-  { formatData, actions, projectInfo }
+  { formatData, actions, projectInfo, className }
 ) => {
   let { projName, buguid, projGUID } = formatData;
   let { setBuGUID, setProjGUID } = actions;
@@ -44,6 +44,7 @@ const LeafItem = (
   return (
     <CheckboxItem
       key={projGUID}
+      className={className}
       onChange={e => onCheckboxChange(e, buguid, projGUID)}
       checked={projGUID === selectedProject}
     >
@@ -52,28 +53,33 @@ const LeafItem = (
   );
 };
 
-const ProjectTree = (renderData, actions, projectInfo, index) => {
+const ProjectTree = (renderData, actions, projectInfo, index, level) => {
   const formatData = projectInfoFormat(renderData);
   const subItem =
     formatData.children && formatData.children.length > 0 ? (
-      <Accordion key={formatData.projGUID} className={cx({[styles.bgDark]: index % 2 === 0 })}>
-        <Accordion.Panel header={formatData.projName}>
+      <Accordion key={formatData.projGUID} className={cx(styles.accordionItem, {[styles.bgDark]: index % 2 === 0 })}>
+        <Accordion.Panel header={formatData.projName} className={styles.accordionHeader}>
           {formatData.children.map((item, index) => {
             return (
-              <div key={index} className={cx(styles.headerSpace, 'item')}>
-                {ProjectTree(item, actions, projectInfo, index)}
+              <div key={index} className={cx('item', ('padding'+ level))}>
+                <div className={cx(styles.treeItem, 'treeItem')}>
+                  {ProjectTree(item, actions, projectInfo, index, level + 1)}
+                </div>
               </div>
             );
           })}
         </Accordion.Panel>
       </Accordion>
     ) : (
-      <LeafItem  
-        formatData={formatData}
-        actions={actions}
-        projectInfo={projectInfo}
-        className={cx(styles.leafItem, {[styles.bgDark]: index % 2 === 0 })}
-      />
+      <div className={cx(styles.leafItemWrapper, 'leafItemWrapper')}>
+        <span className={cx(styles.space,`leafPadding${level}`)}></span>
+        <LeafItem
+          formatData={formatData}
+          actions={actions}
+          projectInfo={projectInfo}
+          className={cx(styles.leafItem, {[styles.bgDark]: index % 2 === 0 })}
+        />
+      </div>
     );
   return subItem;
 };
@@ -132,7 +138,7 @@ class Self extends React.Component {
                     return ProjectTree( { ...item }, {
                       setBuGUID,
                       setProjGUID
-                    }, { selectedProject: this.props.selectedProject }, index ) 
+                    }, { selectedProject: this.props.selectedProject }, index, 0 ) 
                   })
                 : <List.Item>无</List.Item>
               }

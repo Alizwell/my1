@@ -19,29 +19,114 @@
 .selfContent {
   height: 100%;
   :global {
+    .padding0 {
+      .am-accordion-header {
+        padding-left: 30px;
+      }
+    }
+    .padding1 {
+      .am-accordion-header {
+        padding-left: 45px;
+      }
+    }
+    .padding2 {
+      .am-accordion-header {
+        padding-left: 60px;
+      }
+    }
+    .padding3 {
+      .am-accordion-header {
+        padding-left: 75px;
+      }
+    }
+    .padding4 {
+      .am-accordion-header {
+        padding-left: 90px;
+      }
+    }
+    .padding5 {
+      .am-accordion-header {
+        padding-left: 105px;
+      }
+    }
+
+    .item {
+      display: flex;
+      flex-direction: row;
+    }
     .am-accordion .am-accordion-item .am-accordion-header {
       font-size: 15px;
     }
     .am-list-item .am-list-line .am-list-content {
       font-size: 15px;
     }
-    .am-list-body
-      > .am-accordion
-      > .am-accordion-item
-      > .am-accordion-content
-      > .am-accordion-content-box {
-      & > .item:nth-child(2n) {
+
+    .am-accordion-content-box > .item:nth-child(2n) {
+      &
+        > .treeItem
+        > .am-accordion
+        > .am-accordion-item
+        > .am-accordion-header {
         background: #f1efef;
-        .am-accordion-header {
+      }
+
+      & > .treeItem > .leafItemWrapper {
+        background: #f1efef;
+        & > .am-list-item {
           background: #f1efef;
         }
-        .am-accordion-content.am-accordion-content-active {
-          background-color: #f1efef !important;
-        }
-        .am-list-item.am-checkbox-item.am-list-item-middle {
-          background-color: #f1efef !important;
+      }
+    }
+    .am-accordion-content-box > .item:nth-child(2n - 1) {
+      &
+        > .treeItem
+        > .am-accordion
+        > .am-accordion-item
+        > .am-accordion-header {
+        background: #fff;
+      }
+
+      & > .treeItem > .leafItemWrapper {
+        background: #fff;
+        & > .am-list-item {
+          background: #fff;
         }
       }
+    }
+  }
+}
+
+.treeItem {
+  flex-grow: 1;
+}
+
+.spaceItem {
+  display: inline-block;
+  width: 15px;
+  flex: 0 0 15px;
+}
+
+.leafItemWrapper {
+  display: flex;
+  flex-direction: row;
+  .space {
+    display: inline-block;
+  }
+  :global {
+    .leafPadding1 {
+      padding-left: 15px;
+    }
+    .leafPadding2 {
+      padding-left: 30px;
+    }
+    .leafPadding3 {
+      padding-left: 45px;
+    }
+    .leafPadding4 {
+      padding-left: 60px;
+    }
+    .leafPadding5 {
+      padding-left: 75px;
     }
   }
 }
