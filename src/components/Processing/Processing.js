@@ -35,11 +35,11 @@ const StepTitle = ({SaleServiceProcGUID, completeDate, title, SaleServiceGUID, s
     <div>
       <Flex>
         <Flex.Item>{momentFormat(completeDate)} {title}</Flex.Item>
-        {hasDel && 
+        {hasDel &&
           <Flex.Item className={styles.delWrapper}>
             <span onClick={handleDel} className={styles.delItem}>删除</span>
           </Flex.Item>
-        }        
+        }
       </Flex>
     </div>
   )
@@ -71,13 +71,13 @@ const Processing = ({saleServiceGUID})=>{
   useEffect(()=>{
     fetchData({saleServiceGUID})
     return () => {
-      alertModal.close();
+      alertModal && alertModal.close();
     }
   }, [saleServiceGUID])
 
   return (
     <>
-      { showLoading 
+      { showLoading
         ? <ActivityIndicator className="loading" size="large" animating={showLoading} />
         : <div className={styles.processing}>
             <p className={styles.record}>记录({processData.length})</p>
