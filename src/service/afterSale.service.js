@@ -14,7 +14,7 @@ export const afterSaleService = ({
   reclassify,
   bankName,
   dataFilter
-}, url) =>{ 
+}, url) =>{
   return api.get(url, {
     params:{
       buGUID,

@@ -53,13 +53,13 @@ const CustomInfo = ({detailInfo, bankData}) => {
       serviceitem: serviceConfig[serviceType],
       djr: formData.dockingPeople ? formData.dockingPeople : '',
       issq: formData.fullMaterial,
-      wscl: formData.unreceivedMaterial ? formData.unreceivedMaterial : '', 
+      wscl: formData.unreceivedMaterial ? formData.unreceivedMaterial : '',
       reason: formData.remark,
       ajbank: formData.mortgageBank ? formData.mortgageBank[0]: '',
       ajyear: formData.mortgageYears,
       ajtotal: formData.mortgageMoney,
       ajyqts: formData.mortgageOverdueDate,
-      gjjbank: formData.commonFoundBank 
+      gjjbank: formData.commonFoundBank
                 ? Array.isArray(formData.commonFoundBank)
                   ? formData.commonFoundBank[0] : ''
                 : '',
