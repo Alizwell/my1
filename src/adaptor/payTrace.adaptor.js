@@ -19,6 +19,7 @@ export const unSignedPayTraceFormat = original => {
     overdueDays: original.逾期天数,
     FeeGUID: original.FeeGUID,
     expectPayDate: original.预计回款日期,
+    contractDate: original.约定签约日期,
     unPaidReason: original.未回款原因
   };
 };

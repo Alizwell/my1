@@ -15,6 +15,7 @@ const PayTraceListItem = props => {
     overdueDays,
     endDate,
     subscribeDate,
+    contractDate, //约定签约日期
     expectPayDate,
     unPaidReason,
     estimatedSigningTime,
@@ -83,7 +84,10 @@ const PayTraceListItem = props => {
             <WhiteSpace />
             <Flex>
               <Flex.Item>
-                <span>预计回款日期: {timeFormat(expectPayDate)}</span>
+                { tabIndex === 0 ?
+                  (<span>约定签约日期: {timeFormat(contractDate)}</span>) :
+                  (<span>预计回款日期: {timeFormat(expectPayDate)}</span>)
+                }
               </Flex.Item>
             </Flex>
             <WhiteSpace />
