@@ -237,7 +237,7 @@ class PayTrace extends React.Component {
         this.state.tabIndex === 0
           ? this.state.unSignReasonData
           : this.state.unPaidReasonData;
-      
+
       const saleServiceGUIDs = ()=>{
         const collection = this.state.followUp['tabs'+ this.state.tabIndex];
         const config = {
@@ -261,8 +261,8 @@ class PayTrace extends React.Component {
     };
 
     const tabs = [
-      { title: "未签约", total: this.state.tabsTotal0 }, 
-      { title: "非按揭" , total: this.state.tabsTotal1 }, 
+      { title: "未签约", total: this.state.tabsTotal0 },
+      { title: "非按揭" , total: this.state.tabsTotal1 },
       { title: "按揭" , total: this.state.tabsTotal2 }
     ];
     const renderTab = (tab)=>{
@@ -281,7 +281,7 @@ class PayTrace extends React.Component {
         <SelectSearch
           setParams={this.setParams}
           loadFunc={this["loadTabs" + this.state.tabIndex + "WithLoading"]}
-          list={[0, 1]}
+          list={[0, 1, 3]}
         />
         <Tabs
           tabs={tabs}
@@ -386,7 +386,7 @@ class PayTrace extends React.Component {
   }
 }
 PayTrace.defaultProps = {
-  followUpBtns: 
+  followUpBtns:
     [
       {
         attr: 'unSign',
@@ -412,7 +412,7 @@ PayTrace.defaultProps = {
               category: 'mortgage',
               attr: 'payTraceTime',
               props: {},
-              label: ['预计签约日期', '预计回款日期'],
+              label: ['约定签约日期', '预计回款日期'],
             },
             {
               type: 'TextareaItem',

@@ -17,6 +17,10 @@ const listData = [
     value: '银行',
     dataKey: 'bankName'
   },
+  {
+    value: '置业',
+    dataKey: 'zygwxm'
+  }
 ]
 
 const SelectSearch = ({loadFunc, setParams, list})=>{
@@ -70,7 +74,7 @@ const SelectSearch = ({loadFunc, setParams, list})=>{
   }
 
   const placeholder = ()=>{
-    const config = ["客户姓名","房号","贷款银行"];
+    const config = ["客户姓名","房号","贷款银行", "置业顾问"];
     return '请输入' + list.map(val=>config[val]).join('、');
   }
 
@@ -85,7 +89,7 @@ const SelectSearch = ({loadFunc, setParams, list})=>{
           onSubmit={onSubmit}
           onChange={onChange}
       />
-      {showPopover && 
+      {showPopover &&
         <Popover
           visible={showPopoverContent}
           className={styles.popoverList}

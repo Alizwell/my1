@@ -20,14 +20,14 @@ const Contract = () => {
       <Helmet>
         <title>合同登记服务</title>
       </Helmet>
-      <AfterSale 
+      <AfterSale
         {...loadData}
-        searchList={[0, 1]}
-        serviceType={'contract'} 
+        searchList={[0, 1, 3]}
+        serviceType={'contract'}
         showTabs={["process"]}
         customTabs={[
-          { title: "未办理"}, 
-          { title: "受理中"}, 
+          { title: "未办理"},
+          { title: "受理中"},
           { title: "已完成"}]
         }
         followUpBtns={
@@ -44,7 +44,7 @@ const Contract = () => {
               }]
             }
           }]
-        } 
+        }
       />
     </>
   );

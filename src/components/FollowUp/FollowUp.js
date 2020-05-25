@@ -59,8 +59,8 @@ const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBan
         }
 
         let data = config[item.category] ? config[item.category] : pickerData;
-        const label = item.category !== 'mortgage' 
-                ? item.label 
+        const label = item.category !== 'mortgage'
+                ? item.label
                 : item.label[payTraceType];
 
         //需要进行售后服务中的process的进程筛选，需要拿到当前的process sequenece进行对比
@@ -84,8 +84,8 @@ const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBan
         </Picker>);
       }
       case 'DatePicker': {
-        const label = item.category !== 'mortgage' 
-                ? item.label 
+        const label = item.category !== 'mortgage'
+                ? item.label
                 : item.label[payTraceType];
 
         return (<DatePicker
@@ -100,20 +100,20 @@ const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBan
         </DatePicker>)
       }
       case 'TextareaItem': {
-        return (<TextareaItem 
+        return (<TextareaItem
                   key={idx}
                   value={modalState[item.attr]}
-                  onChange={v => onDateChange(item.attr, v)} 
-                  title={item.label} 
-                  rows={2} 
+                  onChange={v => onDateChange(item.attr, v)}
+                  title={item.label}
+                  rows={2}
                 />)
       }
-      default: 
+      default:
         return <></>;
     }
   }
 
-  
+
 
   const commitAfterSaleProcess = async ()=>{
     let selectVal = modalState.process;
@@ -149,7 +149,7 @@ const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBan
       'commonFound': '公积金',
       'mortgage': '按揭'
     }
-  
+
     let targetItem = loanBankData.find( v => String(v.BankGUID) === String(modalState[modalState.category]) );
     if (targetItem) {
       await setServiceBank({
@@ -177,7 +177,7 @@ const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBan
           text: "提交",
           onPress: async () => {
             if (!modalState.category) {
-              return serviceType === 'payTrace' 
+              return serviceType === 'payTrace'
                 ? Toast.info('请选择原因!!!', 1)
                 : Toast.info('请选择数据!!!', 1);
             }
@@ -191,7 +191,7 @@ const FollowUpModal = ({onClose, modalContent, payTraceType, pickerData, loanBan
               let selectVal = modalState[modalState.category];
               let checkResult1 = checkVal({val: selectVal, name: '原因'});
               let checkResult2 = checkResult1 && checkVal({val: modalState.closeTime, name: '闭合时间'});
-              let checkResult3 = checkResult2 && checkVal({val: modalState.payTraceTime, name: payTraceType === 0 ? '预计签约日期' : '预计回款日期'});
+              let checkResult3 = checkResult2 && checkVal({val: modalState.payTraceTime, name: payTraceType === 0 ? '约定签约日期' : '预计回款日期'});
               if (checkResult3) {
                 showParentLoading && showParentLoading();
                 await commitPayTrace();
@@ -277,9 +277,9 @@ const BottomBtn = ({
         )
       }
       {showModal && <FollowUpModal
-          onClose={onCloseModal} 
+          onClose={onCloseModal}
           loanBankData={loanBankData}
-          serviceProcess={serviceProcess}   
+          serviceProcess={serviceProcess}
           modalContent={modalContent }
           payTraceType={payTraceType}
           payTraceData={payTraceData}

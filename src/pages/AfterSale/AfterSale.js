@@ -278,7 +278,7 @@ class AfterSale extends React.Component {
           }
         }))
       }
-    } 
+    }
     return this.tabsFollowUp(1)(val, method);
   };
 
@@ -363,8 +363,8 @@ class AfterSale extends React.Component {
     };
 
     const tabs = [
-      { title: "未办理", total: this.state.tabsTotal0 }, 
-      { title: "受理中" , total: this.state.tabsTotal1 }, 
+      { title: "未办理", total: this.state.tabsTotal0 },
+      { title: "受理中" , total: this.state.tabsTotal1 },
       { title: "已放款" , total: this.state.tabsTotal2 }
     ];
 
@@ -521,7 +521,7 @@ class AfterSale extends React.Component {
 AfterSale.defaultProps = {
   hideOverdue: true,
   canGetProcess: false,
-  searchList: [0, 1, 2],
+  searchList: [0, 1, 2, 3],
   followUpBtns:
     [
       {
