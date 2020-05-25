@@ -26,7 +26,8 @@ const MortgageListItem = props => {
     noCheck,
     setDetail,
     hideOverdue,
-    selectedItem
+    selectedItem,
+    fullMaterial
   } = props;
 
   const onChange = (e)=>{
@@ -41,14 +42,14 @@ const MortgageListItem = props => {
 
   let history = useHistory();
   const pathname = history.location.pathname;
-  const serviceType = pathname.includes('commonFound') 
+  const serviceType = pathname.includes('commonFound')
                       ? 'commonFound'
                       : pathname.includes('contract')
                         ? 'contract'
-                        : 'mortgage'; 
+                        : 'mortgage';
   const handleItemClk = (e)=>{
     history.push(
-      { 
+      {
         pathname:'/detail',
         state:{
           saleServiceGUID: SaleServiceGUID
@@ -69,7 +70,7 @@ const MortgageListItem = props => {
                 <span>{buildingNo}</span>
               </Flex.Item>
               <Flex.Item className={"rightText"}>
-                <span>资料是否齐全：{isDataComplete}</span>
+                <span>资料是否齐全：{fullMaterial == 1 ? "是" : "否"}</span>
               </Flex.Item>
             </Flex>
             <WhiteSpace />
@@ -77,7 +78,7 @@ const MortgageListItem = props => {
               <Flex.Item>
                 <span>{customName}</span>
               </Flex.Item>
-              { !hideOverdue && 
+              { !hideOverdue &&
                 <Flex.Item className={"rightText"}>
                   {/* <span style={{ color: "red" }}>逾期天数: {overDueDays}</span> */}
                   <OverDueDays days={overDueDays} />

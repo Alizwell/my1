@@ -64,7 +64,8 @@ export const handledMortgageFormat = original => {
     isFirstBatchMaterial: original.是否首期材料,
     isNoInformationReceived: original.未收到资料,
     mortgageOverdueDays: original.按揭逾期天数,
-    commonFoundOverdueDay: original.公积金逾期天数
+    commonFoundOverdueDay: original.公积金逾期天数,
+    fullMaterial: original.是否收齐材料
   };
 };
 
