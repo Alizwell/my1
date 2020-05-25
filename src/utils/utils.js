@@ -10,5 +10,5 @@ export const moneyFormat = (money, fixed = 0 , spaceNumber = 1) => {
 }
 
 export const timeFormat = (time)=>{
-  return moment(time).isValid() ? moment(time).format("YYYY-MM-DD") : '';
+  return (time && moment(time).isValid()) ? moment(time).format("YYYY-MM-DD") : '';
 }
